@@ -1,0 +1,28 @@
+version: '3.7'
+
+networks:
+  default:
+    driver: bridge
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: development
+    ports:
+      - "8081:80"
+    networks:
+      - default
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        BUILD_ARGS: ''
+    ports:
+      - "8080:80"
+    networks:
+      - default
