@@ -1,17 +1,19 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const WorkboxWebpackPlugin = require("workbox-webpack-plugin");
+import path from "path";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import WorkboxWebpackPlugin from "workbox-webpack-plugin";
+import type { Configuration } from "webpack";
+import "webpack-dev-server";
 
-const isProduction = process.env.NODE_ENV == "production";
+const isProduction = process.env.NODE_ENV === "production";
 
 const stylesHandler = isProduction
   ? MiniCssExtractPlugin.loader
   : "style-loader";
 
-const config = {
+const config: Configuration = {
   entry: "./src/index.ts",
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -57,7 +59,7 @@ const config = {
   },
 };
 
-module.exports = () => {
+export default () => {
   if (isProduction) {
     config.mode = "production";
 
