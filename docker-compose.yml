@@ -5,10 +5,25 @@ networks:
     driver: bridge
 
 services:
-  server:
+  nginx:
+    container_name: nginx
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: docker.nginx.Dockerfile
+      args:
+        SERVER_URL: ${NGINX_SERVER_URL:-}
+        CLIENT_URL: ${NGINX_CLIENT_URL:-}
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - default
+
+  server:
+    container_name: server
+    build:
+      context: .
+      dockerfile: docker.server.Dockerfile
       args:
         NODE_ENV: development
     ports:
@@ -17,11 +32,15 @@ services:
       - default
 
   client:
+    container_name: client
     build:
-      context: ./client
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: docker.client.Dockerfile
       args:
-        BUILD_ARGS: ''
+        BUILD_ARGS: ${CLIENT_BUILD_ARGS:-}
+        API_BASE_URL: ${CLIENT_API_BASE_URL:-}
+        API_AUTH_URL: ${CLIENT_API_AUTH_URL:-}
+        API_AUTH_LOGIN_URL: ${CLIENT_API_AUTH_LOGIN_URL:-}
     ports:
       - "8080:80"
     networks:
