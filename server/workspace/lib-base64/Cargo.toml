@@ -13,3 +13,6 @@ features = [
 
 [dependencies.thiserror]
 version = "1.0"
+
+[dev-dependencies.proptest]
+version = "1.1"

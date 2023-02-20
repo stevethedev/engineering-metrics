@@ -18,9 +18,45 @@ pub use error::{Error, Result};
 #[cfg(test)]
 mod tests {
     use super::*;
+    use proptest::prelude::*;
+
+    proptest! {
+        #[test]
+        fn test_encode(
+            bytes in prop::collection::vec(any::<u8>(), 0..128)
+        ) {
+            let mut target = [0u8; 128 * 4 / 3];
+            let len = encode_into(&bytes, &mut target).unwrap();
+
+            assert_eq!(len, encode(&bytes).unwrap().len());
+            assert_eq!(&target[..len], encode(&bytes).unwrap().as_bytes());
+        }
+
+        #[test]
+        fn test_decode(
+            bytes in prop::collection::vec(any::<u8>(), 0..128)
+        ) {
+            let encoded = encode(&bytes).unwrap();
+            let mut target = [0u8; 128];
+            let len = decode_into(&encoded, &mut target).unwrap();
+
+            assert_eq!(len, bytes.len());
+            assert_eq!(&target[..len], &bytes);
+        }
+
+        #[test]
+        fn test_encode_decode_roundtrip(
+            bytes in prop::collection::vec(any::<u8>(), 0..128)
+        ) {
+            let encoded = encode(&bytes).unwrap();
+            let decoded = decode(&encoded).unwrap();
+
+            assert_eq!(decoded, bytes);
+        }
+    }
 
     #[test]
-    fn test_encode() {
+    fn test_encode_into() {
         let bytes = b"example bytestring!";
         let mut target = [0u8; 128];
         let len = encode_into(bytes, &mut target).unwrap();
@@ -31,7 +67,7 @@ mod tests {
     }
 
     #[test]
-    fn test_decode() {
+    fn test_decode_into() {
         let bytes = b"ZXhhbXBsZSBieXRlc3RyaW5nIQ";
         let mut target = [0u8; 128];
         let len = decode_into(bytes, &mut target).unwrap();

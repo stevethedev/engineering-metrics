@@ -51,6 +51,10 @@ pub fn into(bytes: impl AsRef<[u8]>, mut target: impl AsMut<[u8]>) -> Result<usi
 
 /// Encodes the provided bytes into a new `String`.
 ///
+/// # Errors
+///
+/// Returns an error if the string could not be encoded.
+///
 /// # Examples
 ///
 /// ```
@@ -106,6 +110,10 @@ pub trait Encode {
 
     /// Encodes the provided bytes into a new `String`.
     ///
+    /// # Errors
+    ///
+    /// Returns an error if the string could not be encoded.
+    ///
     /// # Examples
     ///
     /// ```
@@ -131,7 +139,7 @@ impl<T: AsRef<[u8]>> Encode for T {
         Base64UrlUnpadded::encode(bytes, &mut target).map_err(Into::<Error>::into)?;
         let result = std::str::from_utf8(&target)
             .map_err(|_| Error::InvalidEncoding)
-            .map(|s| s.to_string())?;
+            .map(std::string::ToString::to_string)?;
         Ok(result)
     }
 }

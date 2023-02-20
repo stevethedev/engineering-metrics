@@ -1,3 +1,5 @@
 mod generated;
 
-pub use generated as schema;
+pub mod schema {
+    pub use super::generated::*;
+}

@@ -6,6 +6,11 @@ pub struct Login<'a> {
     pub password: &'a str,
 }
 
+/// Returns `None` if the login failed, `Some` if it succeeded.
+///
+/// # Errors
+///
+/// Returns an error if the token could not be generated.
 pub fn login(login: &Login) -> Result<Option<Token>> {
     if login.username != "test" || login.password != "test" {
         return Ok(None);

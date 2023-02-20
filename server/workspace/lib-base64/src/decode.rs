@@ -42,6 +42,10 @@ pub fn into(bytes: impl AsRef<[u8]>, mut target: impl AsMut<[u8]>) -> Result<usi
 
 /// Decodes the provided bytes into a new `Vec<u8>`.
 ///
+/// # Errors
+///
+/// Returns an error if the string could not be decoded.
+///
 /// # Examples
 ///
 /// ```
@@ -85,6 +89,10 @@ pub trait Decode {
     fn decode_into(&self, target: &mut [u8]) -> Result<usize>;
 
     /// Decodes the provided bytes into a new `Vec<u8>`.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the string could not be decoded.
     ///
     /// # Examples
     ///

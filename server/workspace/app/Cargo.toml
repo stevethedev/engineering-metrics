@@ -14,8 +14,19 @@ path = "../lib-authentication"
 [dependencies.lib-base64]
 path = "../lib-base64"
 
+[dependencies.lib-json-schema]
+path = "../lib-json-schema"
+
 [dependencies.log]
 version = "0.4"
 
 [dependencies.env_logger]
 version = "0.10"
+
+[dependencies.serde]
+version = "1.0"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "1.0"
+

@@ -7,10 +7,15 @@ export class Requester {
     this.#fetch = (...args) => fetch(...args);
   }
 
-  async post(url: string, options: RequestInit): Promise<Response> {
+  async post<Body>(url: string, body: Body, options?: RequestInit): Promise<Response> {
     return this.#fetch(url, {
       ...options,
       method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        ...options?.headers,
+      },
+      body: JSON.stringify(body),
     });
   }
 }
