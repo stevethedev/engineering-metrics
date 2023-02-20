@@ -6,12 +6,13 @@
     "moduleResolution": "node",
     "module": "ESNext",
     "target": "es6",
-    "allowJs": true
+    "allowJs": true,
+    "jsx": "react-jsx"
   },
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"
     }
   },
-  "files": ["src/index.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "webpack.config.ts"]
 }
