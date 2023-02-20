@@ -1,7 +1,10 @@
 const path = require("path");
 const fs = require("fs/promises");
-const { existsSync, writeFileSync } = require("fs");
+const { existsSync, writeFileSync, createWriteStream } = require("fs");
 const { spawnSync } = require("child_process");
+const os = require("os");
+const axios = require("axios");
+const decompress = require("decompress");
 
 const INPUT_JTD_DIR = process.env.INPUT_JTD_DIR || path.join(__dirname, "src");
 const OUTPUT_RS_DIR =
@@ -21,11 +24,62 @@ const OUTPUT_TS_DIR =
 const JTD_EXTENSION = process.env.JTD_EXTENSION || ".jtd.json";
 const JTD_EXECUTOR_PATH =
   process.env.JTD_EXECUTOR_PATH || path.join(__dirname, ".bin");
-const JTD_EXECUTOR = path.join(JTD_EXECUTOR_PATH, "bin", "jtd-codegen");
+
+const getJtdExecutor = () => {
+  const ver = spawnSync("jtd-codegen", ["--version"], { shell: false })
+  if (!ver.error) {
+    return "jtd-codegen";
+  }
+  return `${path.join(JTD_EXECUTOR_PATH, "jtd-codegen")}${os.platform() === "win32" ? ".exe" : ""}`;
+}
+
+const JTD_EXECUTOR = getJtdExecutor();
 
 const setup = async () => {
   await Promise.all([setupPaths(), setupJtd()]);
 };
+
+const getJtdCodegenDownloadPath = () => {
+  const platform = os.platform();
+
+  const version = "0.4.1";
+  const getUrl = (target) => `https://github.com/jsontypedef/json-typedef-codegen/releases/download/v${version}/${target}.zip`;
+
+  if (platform === "win32") {
+    return getUrl("x86_64-pc-windows-gnu");
+  }
+
+  if (platform === "linux") {
+    // check if GNU or musl or other
+    const lddResult = spawnSync("ldd", ["/usr/bin/env"], { shell: false });
+    const isMusl = !lddResult.error && lddResult.stdout.toString().includes("musl");
+    return getUrl(isMusl ? "x86_64-unknown-linux-musl" : "x86_64-unknown-linux-gnu");
+  }
+
+  if (platform === "darwin") {
+    return getUrl("x86_64-apple-darwin");
+  }
+
+  throw new Error(`Unsupported platform: ${platform}`);
+}
+
+const downloadJtdCodegen = async (downloadDir) => {
+  const downloadPath = getJtdCodegenDownloadPath();
+
+  // Download the `downloadPath` to `jtd-codegen.zip`
+  const response = await axios.get(downloadPath, { responseType: "stream" });
+  const writer = createWriteStream(path.join(downloadDir, "jtd-codegen.zip"));
+  response.data.pipe(writer);
+
+  await new Promise((resolve, reject) => {
+    writer.on("finish", resolve);
+    writer.on("error", reject);
+  });
+}
+
+const unzipJtdCodegen = async (downloadDir, unzipDir) => {
+  await decompress(path.join(downloadDir, "jtd-codegen.zip"), unzipDir);
+}
 
 const setupJtd = async () => {
   if (!spawnSync("jtd-codegen", ["--version"], { shell: false }).error) {
@@ -37,20 +91,18 @@ const setupJtd = async () => {
     await fs.mkdir(JTD_EXECUTOR_PATH, { recursive: true });
   }
 
-  if (spawnSync("cargo", ["--version"], { shell: false }).error) {
-    process.stdout.write("Cargo not found. Please install it.\n");
-    return;
-  }
-
   if (!spawnSync(JTD_EXECUTOR, ["--version"], { shell: false }).error) {
     process.stdout.write("jtd-codegen already installed.\n");
     return;
   }
 
   process.stdout.write("jtd-codegen not found. Installing...\n");
-  spawnSync("cargo", ["install", "--root", JTD_EXECUTOR_PATH, "jtd-codegen"], {
-    shell: false,
-  });
+  const downloadDir = await fs.mkdtemp(os.tmpdir());
+  await downloadJtdCodegen(downloadDir);
+  await unzipJtdCodegen(downloadDir, JTD_EXECUTOR_PATH);
+  console.log(spawnSync(JTD_EXECUTOR, ["--version"], { shell: false }))
+  const version = spawnSync(JTD_EXECUTOR, ["--version"], { shell: false }).stdout.toString().trim();
+  process.stdout.write(`jtd-codegen installed. Version: ${version}\n`);
 };
 
 const setupPaths = async () => {
@@ -83,19 +135,33 @@ const listFiles = async (dir) => {
   return files_list.flat().filter((file) => file.endsWith(JTD_EXTENSION));
 };
 
+const rsModCache = {};
+
 const updateRsMods = (dir) => {
+  let first = true;
   while (dir !== OUTPUT_RS_DIR) {
     const modName = path.basename(dir);
     dir = path.dirname(dir);
-    if (!existsSync(path.join(dir, "mod.rs"))) {
-      writeFileSync(
-        path.join(dir, "mod.rs"),
-        "// Generated code. Do not edit.\n"
-      );
+    const targetFile = path.join(dir, "mod.rs");
+    if (!existsSync(targetFile)) {
+      writeFileSync(targetFile, "// Generated code. Do not edit.\n");
     }
-    writeFileSync(path.join(dir, "mod.rs"), `pub mod ${modName};\n`, {
+
+    const exportContents = `mod ${modName};\npub use ${modName}::*;\n`;
+    const exportModule = `pub mod ${modName};\n`;
+
+    const exportLine = first ? exportContents : exportModule;
+
+    rsModCache[targetFile] = rsModCache[targetFile] || [];
+    if (rsModCache[targetFile].includes(exportLine)) {
+      return;
+    }
+
+    rsModCache[targetFile].push(exportLine);
+    writeFileSync(targetFile, exportLine, {
       flag: "a",
     });
+    first = false;
   }
 };
 
@@ -147,9 +213,9 @@ const processJtd = async (file) => {
     fs.mkdir(tsDir, { recursive: true }),
   ]);
 
-  spawnSync(
+  const { stdout, stderr } = spawnSync(
     JTD_EXECUTOR,
-    ["--rust-out", rsDir, "--typescript-out", tsDir, "--", file],
+    ["--rust-out", rsDir, "--typescript-out", tsDir, file],
     { shell: false }
   );
 
@@ -163,7 +229,10 @@ const processJtd = async (file) => {
     if (!isTsSuccess) {
       process.stdout.write(`Failed to generate TypeScript code for ${file}.\n`);
     }
-    throw new Error("Failed to generate code for " + file);
+
+    stdout && process.stdout.write(`stdout: ${stdout}\n`);
+    stderr && process.stderr.write(`stderr: ${stderr}\n`);
+    throw new Error(`Failed to generate code for ${file}`);
   }
 
   updateRsMods(rsDir);
@@ -173,6 +242,10 @@ const processJtd = async (file) => {
 const main = async () => {
   await setup();
   const files = await listFiles(INPUT_JTD_DIR);
+
+  process.stdout.write(`Found ${files.length} files.\n`);
+  process.stdout.write(`Using jtd-codegen version ${spawnSync(JTD_EXECUTOR, ["--version"], { shell: false }).stdout.toString().trim()}.\n`);
+
   await Promise.all(files.map(processJtd));
 };
 

@@ -12,14 +12,16 @@ RUN unzip x86_64-unknown-linux-musl.zip
 
 FROM node AS json-builder
 
-ENV OUTPUT_TS_DIR=/app/json-builder/build/ts
+ENV OUTPUT_TS_DIR=/build/json-builder/build/ts
+ENV JTD_EXECUTOR_PATH=/usr/bin/jtd-codegen
 
 WORKDIR /build/json-builder
 
 COPY --from=json-builder-setup /build/json-builder-setup/jtd-codegen /usr/bin/jtd-codegen
 COPY ./json-schema ./
 
-RUN node ./run.js
+RUN npm ci --omit=dev
+RUN npm run start
 
 WORKDIR /build/json-builder/build/ts
 
