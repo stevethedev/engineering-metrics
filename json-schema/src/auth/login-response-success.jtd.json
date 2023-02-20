@@ -1,0 +1,13 @@
+{
+  "metadata": {
+    "description": "Response from a successful authentication request."
+  },
+  "properties": {
+    "token": {
+      "metadata": {
+        "description": "The token to use for authentication."
+      },
+      "type": "string"
+    }
+  }
+}

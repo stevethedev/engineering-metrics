@@ -1,9 +1,18 @@
 {
+  "metadata": {
+    "description": "The payload for a login request."
+  },
   "properties": {
     "username": {
+      "metadata": {
+        "description": "The username to use for login."
+      },
       "type": "string"
     },
     "password": {
+      "metadata": {
+        "description": "The password to use for login."
+      },
       "type": "string"
     }
   }
