@@ -7,7 +7,7 @@ export class Requester {
     this.#fetch = (...args) => fetch(...args);
   }
 
-  async post<T>(url: string, options: RequestInit): Promise<Response> {
+  async post(url: string, options: RequestInit): Promise<Response> {
     return this.#fetch(url, {
       ...options,
       method: "POST",
