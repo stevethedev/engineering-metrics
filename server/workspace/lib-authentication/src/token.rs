@@ -55,11 +55,27 @@ impl Token {
     pub fn is_empty(&self) -> bool {
         self.token.is_empty()
     }
+
+    /// Convert the token into a string.
+    ///
+    /// # Returns
+    ///
+    /// The token as a string, or `None` if the token is not valid UTF-8.
+    pub fn to_string(&self) -> Option<String> {
+        String::from_utf8(self.as_ref().to_vec()).ok()
+    }
 }
 
 impl AsRef<[u8]> for Token {
     fn as_ref(&self) -> &[u8] {
         self.token.as_ref()
+    }
+}
+
+impl<T: Into<Bytes>> From<T> for Token {
+    fn from(token: T) -> Self {
+        let token = token.into();
+        Token { token }
     }
 }
 
@@ -69,14 +85,14 @@ mod tests {
 
     #[test]
     fn test_generate() {
-        let token = Token::generate(32);
-        assert_eq!(token.token.len(), 32);
+        let token = Token::generate(32).unwrap();
+        assert_eq!(token.len(), 32);
     }
 
     #[test]
     fn test_generate_different() {
-        let token1 = Token::generate(32);
-        let token2 = Token::generate(32);
+        let token1 = Token::generate(32).unwrap();
+        let token2 = Token::generate(32).unwrap();
         assert_ne!(token1, token2);
     }
 }

@@ -7,8 +7,8 @@
     clippy::pedantic
 )]
 
+mod controllers;
 mod error;
-mod login;
 mod token;
 
 pub use error::{Error, Result};
