@@ -11,8 +11,8 @@ services:
       context: .
       dockerfile: docker.nginx.Dockerfile
       args:
-        SERVER_URL: ${NGINX_SERVER_URL:-}
-        CLIENT_URL: ${NGINX_CLIENT_URL:-}
+        SERVER_URL: ${NGINX_SERVER_URL:-http://server/}
+        CLIENT_URL: ${NGINX_CLIENT_URL:-http://client/}
     ports:
       - "80:80"
       - "443:443"
@@ -26,6 +26,8 @@ services:
       dockerfile: docker.server.Dockerfile
       args:
         NODE_ENV: development
+    environment:
+      RUST_LOG: ${SERVER_RUST_LOG:-}
     ports:
       - "8081:80"
     networks:

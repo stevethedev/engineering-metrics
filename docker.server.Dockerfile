@@ -34,7 +34,9 @@ RUN apk add --no-cache musl-dev
 COPY ./server .
 COPY --from=json-builder /build/json-builder/build/rs ./workspace/lib-json-schema/src/generated
 
-RUN cargo install --locked --path ./workspace/app
+RUN \
+    --mount=type=cache,target=/build/server/target,rw \
+    cargo install --locked --path ./workspace/app
 
 
 FROM alpine:3.17.2 AS runtime
