@@ -3,8 +3,8 @@ use crate::{Result, TokenRepoInterface, UserRepoInterface};
 use lib_environment::EnvironmentVariable;
 use std::time::Duration;
 
-/// The login data.
-pub struct Login<'a> {
+/// Authentication credentials.
+pub struct Credentials<'a> {
     /// The username.
     pub username: &'a str,
 
@@ -31,7 +31,7 @@ pub struct Login<'a> {
 pub async fn login<'a>(
     user_repo: &impl UserRepoInterface,
     token_repo: &impl TokenRepoInterface,
-    login: &Login<'a>,
+    login: &Credentials<'a>,
     ttl: Option<&Duration>,
 ) -> Result<Option<Token>> {
     let user = user_repo
@@ -68,7 +68,7 @@ mod tests {
         let user_repo = UserRepo::memory();
         let token_repo = TokenRepo::memory();
 
-        let creds = Login {
+        let creds = Credentials {
             username: "test",
             password: "test",
         };
@@ -91,7 +91,7 @@ mod tests {
         let user_repo = UserRepo::memory();
         let token_repo = TokenRepo::memory();
 
-        let creds = Login {
+        let creds = Credentials {
             username: "admin",
             password: "invalid",
         };

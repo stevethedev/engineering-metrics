@@ -8,6 +8,9 @@ edition = "2021"
 [dependencies.actix-web]
 version = "4.3"
 
+[dependencies.futures]
+version = "0.3"
+
 [dependencies.lib-authentication]
 path = "../lib-authentication"
 

@@ -39,6 +39,8 @@ const config: Configuration = {
       API_BASE_URL: null,
       API_AUTH_URL: null,
       API_AUTH_LOGIN_URL: null,
+      API_AUTH_WHOAMI_URL: null,
+      API_TOKEN_KEY: null,
     }),
   ],
   module: {
@@ -73,10 +75,8 @@ const config: Configuration = {
 export default () => {
   if (isProduction) {
     config.mode = "production";
-
-    config.plugins.push(new MiniCssExtractPlugin());
-
-    config.plugins.push(new WorkboxWebpackPlugin.GenerateSW());
+    config.plugins?.push(new MiniCssExtractPlugin());
+    config.plugins?.push(new WorkboxWebpackPlugin.GenerateSW());
   } else {
     config.mode = "development";
   }

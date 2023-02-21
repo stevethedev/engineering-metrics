@@ -1,4 +1,4 @@
-import { Requester, WindowFetch } from "../../common";
+import { Requester, RequesterOptions } from "../../common";
 import { apiAuthLoginUrl } from "../../../environment";
 import { LoginRequest } from "../../../generated/auth";
 import { DeepReadonly } from "ts-essentials";
@@ -37,9 +37,9 @@ export interface LoginController {
  * Configuration options for the login API.
  */
 export interface LoginApiOptions {
-  url?: string;
+  requesterOptions?: RequesterOptions;
 
-  fetch?: WindowFetch;
+  url?: string;
 }
 
 /**
@@ -50,9 +50,9 @@ export class LoginApi implements LoginController {
 
   readonly #request: Requester;
 
-  constructor(options?: DeepReadonly<LoginApiOptions>) {
+  constructor(options?: Readonly<LoginApiOptions>) {
     this.#url = options?.url ?? apiAuthLoginUrl;
-    this.#request = new Requester(options?.fetch);
+    this.#request = new Requester(options?.requesterOptions);
   }
 
   /**
@@ -60,11 +60,16 @@ export class LoginApi implements LoginController {
    * @param credentials
    * @returns The authentication token if successful, null otherwise.
    */
-  async login(credentials: DeepReadonly<LoginCredentials>): Promise<LoginResult> {
-    const response = await this.#request.post<LoginRequest>(this.#url, credentials);
+  async login(
+    credentials: DeepReadonly<LoginCredentials>
+  ): Promise<LoginResult> {
+    const response = await this.#request.post<LoginRequest>(
+      this.#url,
+      credentials
+    );
 
     if (response.ok) {
-      return response.json();
+      return (await response.json()) as LoginResult;
     }
 
     return null;

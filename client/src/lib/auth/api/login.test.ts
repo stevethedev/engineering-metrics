@@ -7,7 +7,10 @@ describe("LoginApi", () => {
       json: jest.fn().mockResolvedValue({ token: "token" }),
     });
 
-    const loginApi = new LoginApi({ url: "/auth/login", fetch });
+    const loginApi = new LoginApi({
+      url: "/auth/login",
+      requesterOptions: { fetch },
+    });
 
     const result = loginApi.login({
       username: "username",
@@ -28,7 +31,10 @@ describe("LoginApi", () => {
       ok: false,
     });
 
-    const loginApi = new LoginApi({ url: "/auth/login", fetch });
+    const loginApi = new LoginApi({
+      url: "/auth/login",
+      requesterOptions: { fetch },
+    });
 
     const result = loginApi.login({
       username: "username",

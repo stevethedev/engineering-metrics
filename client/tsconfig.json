@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "strict": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
@@ -7,12 +8,17 @@
     "module": "ESNext",
     "target": "es6",
     "allowJs": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "lib": [
+      "esnext", "webworker"
+    ]
   },
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "webpack.config.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "webpack.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

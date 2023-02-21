@@ -1,18 +1,21 @@
-import { AuthContextData } from "../provider/context";
 import { useAuth } from "./use-auth";
+import { TokenProvider } from "../../common/token";
 
-type TokenState = [
-  AuthContextData["token"],
-  (token: AuthContextData["token"]) => void
-];
+type TokenState = [string | null, (token: string | null) => void];
 
-export const useToken = (): TokenState => {
+/**
+ * Hook to use the token state.
+ * @param tokenProvider Token provider to use. If not provided, the token
+ * provider from the auth context will be used.
+ */
+export const useToken = (
+  tokenProvider: TokenProvider | null = null
+): TokenState => {
   const [auth, setAuth] = useAuth();
-
-  const token = auth.token;
+  const manager = tokenProvider ?? auth.tokenProvider;
   const setToken = (token: string | null) => {
-    setAuth((auth) => ({ ...auth, token }));
+    manager.setToken(token);
+    setAuth((auth) => ({ ...auth, tokenProvider: manager }));
   };
-
-  return [token, setToken];
+  return [manager.token, setToken];
 };

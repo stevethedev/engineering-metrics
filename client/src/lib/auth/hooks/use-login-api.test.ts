@@ -10,7 +10,7 @@ describe("useLoginApi", () => {
     });
 
     const { result } = renderHook(
-      () => useLoginApi({ url: "/auth/login", fetch }),
+      () => useLoginApi({ url: "/auth/login", requesterOptions: { fetch } }),
       { wrapper: Provider }
     );
 

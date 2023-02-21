@@ -4,14 +4,18 @@ import { useToken } from "../../lib/auth";
 
 export const LoginController = () => {
   const login = useLoginApi();
-  const [_, setToken] = useToken();
+  const [, setToken] = useToken();
 
-  const handleLogin = async (props: { username: string; password: string }) => {
-    const result = await login(props);
-    setToken(result?.token ?? null);
-  }
+  const handleLogin = (props: { username: string; password: string }) => {
+    login(props).then(
+      (result) => {
+        setToken(result?.token ?? null);
+      },
+      () => {
+        setToken(null);
+      }
+    );
+  };
 
-  return (
-    <LoginForm onSubmit={handleLogin} />
-  )
-}
+  return <LoginForm onSubmit={handleLogin} />;
+};

@@ -1,16 +1,12 @@
 import { LoginApi, LoginApiOptions, LoginController } from "../api";
-import { useAuth } from "./use-auth";
 
+/**
+ * Hook for using the login API.
+ * @param options Options for the login API.
+ */
 export const useLoginApi = (
   options?: LoginApiOptions
 ): LoginController["login"] => {
-  const [auth] = useAuth();
-
-  if (!auth) {
-    throw new Error("useLoginApi must be used within a LoginProvider");
-  }
-
   const api = new LoginApi(options);
-
   return api.login.bind(api);
 };

@@ -8,7 +8,12 @@ const App = () => {
       <LoginPage />
     </AuthProvider>
   );
+};
+
+const root = document.getElementById("app");
+
+if (!root) {
+  throw new Error("Root element not found");
 }
 
-createRoot(document.getElementById("app"))
-  .render(<App />);
+createRoot(root).render(<App />);

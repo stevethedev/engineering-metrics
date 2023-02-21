@@ -1,7 +1,12 @@
 import { useContext } from "react";
-import { context } from "../provider/context";
+import { context, ContextParams } from "../provider/context";
 
-export const useAuth = () => {
+/**
+ * Hook to use the auth context
+ *
+ * @returns The auth context.
+ */
+export const useAuth = (): ContextParams => {
   const auth = useContext(context);
 
   if (!auth) {

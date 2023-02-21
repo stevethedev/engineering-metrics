@@ -1,8 +1,17 @@
 import { FC } from "react";
 import { LoginController } from "../../components/login-form";
+import { useWhoAmI } from "../../lib/auth/hooks/use-whoami";
+import { WhoAmI } from "../../components/whoami";
 
-export interface LoginPage {}
+/**
+ * The login page.
+ */
+export const LoginPage: FC = () => {
+  const [whoami] = useWhoAmI();
 
-export const LoginPage: FC<LoginPage> = () => {
+  if (whoami) {
+    return <WhoAmI />;
+  }
+
   return <LoginController />;
 };
