@@ -1,4 +1,4 @@
-use crate::controllers::auth::{login, whoami};
+use crate::controllers::auth::{login, logout, whoami};
 use crate::middleware::bearer_token::RequestToken;
 use actix_web::{get, post, web, HttpResponse, Responder};
 use lib_json_schema::schema::auth::LoginRequest;
@@ -34,8 +34,15 @@ async fn post_login(
 }
 
 #[get("/logout")]
-async fn get_logout() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
+async fn get_logout(
+    provider: web::Data<lib_authentication::Provider>,
+    bearer_token: RequestToken,
+) -> impl Responder {
+    let Some(token) = bearer_token.as_ref() else { return HttpResponse::Unauthorized().finish() };
+    match logout(&provider, token).await {
+        Err(_) => HttpResponse::Unauthorized().finish(),
+        Ok(_) => HttpResponse::Ok().finish(),
+    }
 }
 
 #[post("/register")]

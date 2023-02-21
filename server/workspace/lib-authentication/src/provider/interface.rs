@@ -22,4 +22,11 @@ pub trait Interface {
     ///
     /// Returns an error if the token could not be checked.
     async fn whoami(&self, token: &Token) -> Result<Option<User>>;
+
+    /// Logs out the user associated with the given token.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the token could not be deleted.
+    async fn logout(&self, token: &Token) -> Result<()>;
 }

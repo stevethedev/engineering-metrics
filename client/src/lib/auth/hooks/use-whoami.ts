@@ -1,4 +1,4 @@
-import { WhoAmIApi, WhoAmIApiOptions, WhoAmIResult } from "../api/whoami";
+import { WhoAmIApi, WhoAmIApiOptions, WhoAmIResult } from "../api";
 import { useToken } from "./use-token";
 import { useEffect } from "react";
 import { useAuth } from "./use-auth";

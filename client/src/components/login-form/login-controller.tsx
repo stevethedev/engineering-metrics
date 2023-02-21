@@ -1,4 +1,4 @@
-import { useLoginApi } from "../../lib/auth/hooks/use-login-api";
+import { useLoginApi } from "../../lib/auth";
 import { LoginForm } from "./login-form";
 import { useToken } from "../../lib/auth";
 

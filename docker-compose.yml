@@ -39,10 +39,9 @@ services:
       context: .
       dockerfile: docker.client.Dockerfile
       args:
-        BUILD_ARGS: ${CLIENT_BUILD_ARGS:-}
-        API_BASE_URL: ${CLIENT_API_BASE_URL:-}
-        API_AUTH_URL: ${CLIENT_API_AUTH_URL:-}
-        API_AUTH_LOGIN_URL: ${CLIENT_API_AUTH_LOGIN_URL:-}
+        BUILD_ARGS: ${CLIENT_BUILD_ARGS}
+        API_BASE_URL: ${CLIENT_API_BASE_URL}
+        API_AUTH_URL: ${CLIENT_API_AUTH_URL}
     ports:
       - "8080:80"
     networks:

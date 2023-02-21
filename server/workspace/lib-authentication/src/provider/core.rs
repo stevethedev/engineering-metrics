@@ -1,5 +1,6 @@
 use super::Interface;
 use crate::controllers::login::login as login_controller;
+use crate::controllers::logout::logout;
 use crate::controllers::whoami::whoami;
 use crate::user_repo::User;
 use crate::{Credentials, Result, Token, TokenRepo, UserRepo};
@@ -45,5 +46,9 @@ impl Interface for Core {
 
     async fn whoami(&self, token: &Token) -> Result<Option<User>> {
         whoami(&self.token_repo, &self.user_repo, token).await
+    }
+
+    async fn logout(&self, token: &Token) -> Result<()> {
+        logout(&self.token_repo, token).await
     }
 }

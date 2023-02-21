@@ -61,7 +61,7 @@ pub async fn login<'a>(
 mod tests {
     use super::*;
     use crate::user_repo::CreateUser;
-    use crate::{TokenRepo, User, UserRepo};
+    use crate::{TokenRepo, UserRepo};
 
     #[test]
     fn test_login() {

@@ -39,6 +39,7 @@ const config: Configuration = {
       API_BASE_URL: null,
       API_AUTH_URL: null,
       API_AUTH_LOGIN_URL: null,
+      API_AUTH_LOGOUT_URL: null,
       API_AUTH_WHOAMI_URL: null,
       API_TOKEN_KEY: null,
     }),

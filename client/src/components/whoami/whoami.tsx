@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useWhoAmI } from "../../lib/auth/hooks/use-whoami";
+import { useWhoAmI } from "../../lib/auth";
 
 export const WhoAmI: FC = () => {
   const [whoami] = useWhoAmI();
