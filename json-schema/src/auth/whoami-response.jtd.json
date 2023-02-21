@@ -1,0 +1,20 @@
+{
+  "$schema": "../schema.json",
+  "metadata": {
+    "description": "A simple response that carries an authentication status-check."
+  },
+  "properties": {
+    "id": {
+      "metadata": {
+        "description": "The authenticated user's ID."
+      },
+      "type": "string"
+    },
+    "username": {
+      "metadata": {
+        "description": "The authenticated username."
+      },
+      "type": "string"
+    }
+  }
+}

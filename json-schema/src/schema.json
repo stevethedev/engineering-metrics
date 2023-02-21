@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "JTD Schema",
+  "description": "JSON Type Definition (JTD) Schema",
+
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "#/definitions/metadata"
+    },
+    "properties": {
+      "$ref": "#/definitions/properties"
+    }
+  },
+  "required": ["properties"],
+
+  "definitions": {
+    "properties": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9](?:[-\\w]*[a-zA-Z0-9])?$": {
+          "description": "Definition for an object property.",
+          "$ref": "#/definitions/property"
+        }
+      }
+    },
+    "property": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/type"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
+        },
+        "properties": {
+          "$ref": "#/definitions/property"
+        }
+      },
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "examples": {
+          "type": "array"
+        },
+        "default": true
+      },
+      "additionalProperties": false
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "string",
+        "int8",
+        "uint8",
+        "int16",
+        "uint16",
+        "int32",
+        "uint32",
+        "int64",
+        "uint64",
+        "float32",
+        "float64",
+        "bool",
+        "timestamp",
+        "nullable",
+        "array",
+        "object",
+        "union",
+        "tuple",
+        "map"
+      ]
+    },
+    "typeArray": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/type" }
+    },
+    "typeMap": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/type" }
+    },
+    "typeMapArray": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/typeMap" }
+    },
+    "typeMapArrayArray": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/typeMapArray" }
+    },
+    "typeMapArrayArrayArray": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/typeMapArrayArray" }
+    },
+    "typeMapArrayArrayArrayArray": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/typeMapArrayArrayArray" }
+    },
+    "typeMapArrayArrayArrayArrayArray": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/typeMapArrayArrayArrayArray" }
+    },
+    "typeMapArrayArrayArrayArrayArrayArray": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/typeMapArrayArrayArrayArrayArray" }
+    },
+    "typeMapArrayArrayArrayArrayArrayArrayArray": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/typeMapArrayArrayArrayArrayArrayArray" }
+    },
+    "typeMapArrayArrayArrayArrayArrayArrayArrayArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/typeMapArrayArrayArrayArrayArrayArrayArray"
+      }
+    }
+  }
+}

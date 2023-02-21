@@ -1,4 +1,5 @@
 {
+  "$schema": "../schema.json",
   "metadata": {
     "description": "Response from a successful authentication request."
   },

@@ -1,4 +1,5 @@
 {
+  "$schema": "../schema.json",
   "metadata": {
     "description": "The payload for a login request."
   },

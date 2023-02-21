@@ -15,10 +15,9 @@ npm run start
 ## Environment Variables
 
 | Variable          | Default                                             | Description                               |
-|-------------------|-----------------------------------------------------|-------------------------------------------|
+| ----------------- | --------------------------------------------------- | ----------------------------------------- |
 | INPUT_JTD_DIR     | `./src`                                             | The directory to search for JTD files.    |
 | OUTPUT_RS_DIR     | `../server/workspace/lib-json-schema/src/generated` | The directory to output Rust files.       |
 | OUTPUT_TS_DIR     | `../client/src/generated`                           | The directory to output TypeScript files. |
 | JTD_EXTENSION     | `.jtd.json`                                         | The file extension to search for.         |
 | JTD_EXECUTOR_PATH | `./.bin`                                            | The path to the JTD executor.             |
-
