@@ -6,6 +6,10 @@
   "scripts": {
     "start": "node ./.bin/start.js",
     "start:no-build": "node ./.bin/start.js --no-build",
+    "install": "node ./.bin/install.js --all",
+    "install:client": "node ./.bin/install.js --client",
+    "install:server": "node ./.bin/install.js --server",
+    "install:json-schema": "node ./.bin/install.js --json-schema",
     "test": "node ./.bin/test.js --all",
     "test:client": "node ./.bin/test.js --client",
     "test:server": "node ./.bin/test.js --server"
