@@ -1,5 +1,8 @@
 {
   "$schema": "../schema.json",
+  "metadata": {
+    "description": "Creates a new user."
+  },
   "properties": {
     "username": {
       "metadata": {
