@@ -17,6 +17,9 @@ path = "../lib-crypto"
 [dependencies.lib-environment]
 path = "../lib-environment"
 
+[dependencies.log]
+version = "0.4"
+
 [dependencies.thiserror]
 version = "1.0"
 

@@ -1,11 +1,15 @@
-use super::Interface;
-use crate::controllers::login::login as login_controller;
-use crate::controllers::logout::logout;
-use crate::controllers::whoami::whoami;
-use crate::user_repo::User;
-use crate::{Credentials, Result, Token, TokenRepo, UserRepo};
-use async_trait::async_trait;
 use std::time::Duration;
+
+use async_trait::async_trait;
+
+use crate::controllers::{
+    login::login as login_controller, logout::logout, register::register as register_controller,
+    whoami::whoami,
+};
+use crate::user_repo::User;
+use crate::{LoginCredentials, RegisterCredentials, Result, Token, TokenRepo, UserRepo};
+
+use super::Interface;
 
 /// The core authentication provider.
 #[derive(Clone)]
@@ -36,12 +40,28 @@ impl Core {
 
 #[async_trait]
 impl Interface for Core {
+    async fn register<'a>(&self, credentials: &RegisterCredentials<'a>) -> Result<()> {
+        let user_id = register_controller(&self.user_repo, credentials).await?;
+        log::info!("Registered user {} ({})", credentials.username, user_id);
+        Ok(())
+    }
+
     async fn login<'a>(
         &self,
-        login: &Credentials<'a>,
+        login: &LoginCredentials<'a>,
         ttl: Option<&Duration>,
     ) -> Result<Option<Token>> {
-        login_controller(&self.user_repo, &self.token_repo, login, ttl).await
+        let result = login_controller(&self.user_repo, &self.token_repo, login, ttl).await?;
+        log::info!(
+            "User {} attempted to log in and {}",
+            login.username,
+            if result.is_some() {
+                "succeeded"
+            } else {
+                "failed"
+            }
+        );
+        Ok(result)
     }
 
     async fn whoami(&self, token: &Token) -> Result<Option<User>> {
@@ -49,6 +69,11 @@ impl Interface for Core {
     }
 
     async fn logout(&self, token: &Token) -> Result<()> {
-        logout(&self.token_repo, token).await
+        let user = self.whoami(token).await?;
+        logout(&self.token_repo, token).await?;
+        if let Some(user) = user {
+            log::info!("User {} ({}) logged out", user.username, user.id);
+        }
+        Ok(())
     }
 }

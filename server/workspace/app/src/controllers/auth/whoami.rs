@@ -13,7 +13,7 @@ use lib_json_schema::schema::auth::WhoamiResponse;
 /// - `None` if the token is invalid.
 /// - `Some` if the token is valid.
 pub async fn whoami(
-    provider: &lib_authentication::Provider,
+    provider: &impl ProviderInterface,
     bearer_token: Option<&Token>,
 ) -> Option<WhoamiResponse> {
     let bearer_token = bearer_token?;

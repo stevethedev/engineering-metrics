@@ -20,6 +20,56 @@ describe("Auth", () => {
         (error) => error.response
       );
 
+  const sendLogoutRequest = async (token: string) =>
+    axios
+      .get(`${apiHost}/auth/logout`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(
+        (response) => response,
+        (error) => error.response
+      );
+
+  const sendRegisterRequest = async (credentials: Readonly<object>) =>
+    axios.post(`${apiHost}/auth/register`, credentials).then(
+      (response) => response,
+      (error) => error.response
+    );
+
+  describe("HTTP POST /auth/register", () => {
+    it("should succeed with valid credentials", async () => {
+      const credentials = {
+        username: `test${Date.now()}`,
+        password: "test",
+      };
+
+      const result = await sendRegisterRequest(credentials);
+      expect(result.status).toBe(201);
+
+      const loginResult = await sendLoginRequest(credentials);
+      expect(loginResult.status).toBe(200);
+      expect(loginResult.data).toHaveProperty("token");
+    });
+  });
+
+  describe("HTTP GET /auth/logout", () => {
+    it("should succeed with valid token", async () => {
+      const response = await sendLoginRequest(authCredentials);
+      const token = response.data.token;
+
+      const result = await sendLogoutRequest(token);
+
+      expect(result.status).toBe(200);
+    });
+
+    it("should fail with invalid token", async () => {
+      const result = await sendLogoutRequest("invalid-token");
+      expect(result.status).toBe(401);
+    });
+  });
+
   describe("HTTP POST /auth/login", () => {
     it("should succeed with valid credentials", async () => {
       const credentials = authCredentials;

@@ -1,4 +1,4 @@
-use lib_authentication::{Credentials, ProviderInterface};
+use lib_authentication::{LoginCredentials, ProviderInterface};
 use lib_base64::Encode;
 use lib_json_schema::schema::auth::{LoginRequest, LoginResponseSuccess};
 
@@ -21,7 +21,7 @@ pub async fn login(
 
     let token = provider
         .login(
-            &Credentials {
+            &LoginCredentials {
                 username: &login_request.username,
                 password: &login_request.password,
             },

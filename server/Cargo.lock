@@ -889,6 +889,7 @@ dependencies = [
  "bytes",
  "lib-crypto",
  "lib-environment",
+ "log",
  "thiserror",
  "uuid",
 ]

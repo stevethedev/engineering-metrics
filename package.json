@@ -10,6 +10,9 @@
     "install:client": "node ./.bin/install.js --client",
     "install:server": "node ./.bin/install.js --server",
     "install:json-schema": "node ./.bin/install.js --json-schema",
+    "lint": "node ./.bin/lint.js --all",
+    "lint:client": "node ./.bin/lint.js --client",
+    "lint:server": "node ./.bin/lint.js --server",
     "test": "node ./.bin/test.js --all",
     "test:client": "node ./.bin/test.js --client",
     "test:server": "node ./.bin/test.js --server"

@@ -7,14 +7,8 @@
     clippy::pedantic
 )]
 
-mod controllers;
-mod error;
-mod provider;
-mod token;
-mod token_repo;
-mod user_repo;
-
-pub use controllers::login::Credentials;
+pub use controllers::login::Credentials as LoginCredentials;
+pub use controllers::register::Credentials as RegisterCredentials;
 pub use error::{Error, Result};
 pub use provider::{Interface as ProviderInterface, Provider};
 pub use token::Token;
@@ -26,3 +20,10 @@ pub use user_repo::{
     Error as UserRepoError, Interface as UserRepoInterface, Memory as MemoryUserRepo,
     Repo as UserRepo, Result as UserRepoResult, User, UserId,
 };
+
+mod controllers;
+mod error;
+mod provider;
+mod token;
+mod token_repo;
+mod user_repo;
