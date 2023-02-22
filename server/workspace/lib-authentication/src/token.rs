@@ -9,7 +9,7 @@ use lib_crypto::fill_bytes;
 /// ```
 /// use lib_authentication::Token;
 ///
-/// let token = Token::generate(32);
+/// let token = Token::generate(32).unwrap();
 /// assert_eq!(token.len(), 32);
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq)]
