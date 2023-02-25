@@ -1,7 +1,9 @@
-use crate::Token;
-use async_trait::async_trait;
 use std::time::Duration;
+
+use async_trait::async_trait;
 use uuid::Uuid;
+
+use crate::TokenInterface;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
@@ -23,7 +25,7 @@ pub enum Error {
 
 /// Provides the interface for a token repository.
 #[async_trait]
-pub trait Interface: Send + Sync {
+pub trait Interface<Token: TokenInterface>: Send + Sync {
     /// Put a user ID into the token repository and return the generated token.
     ///
     /// # Parameters
@@ -62,4 +64,41 @@ pub trait Interface: Send + Sync {
     ///
     /// Returns an error if the token could not be deleted.
     async fn delete(&self, token: &Token) -> Result<()>;
+
+    /// Tag the token with a key-value pair.
+    ///
+    /// # Parameters
+    ///
+    /// - `token`: The token to tag.
+    /// - `tag`: The tag to add.
+    /// - `value`: The value to add.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the token could not be tagged.
+    async fn put_tag(&self, token: &Token, tag: &str, value: &[u8]) -> Result<()>;
+
+    /// Get all tokens with a specific tag/value pair.
+    ///
+    /// # Parameters
+    ///
+    /// - `tag`: The tag to search for.
+    /// - `value`: The value to search for.
+    ///
+    /// # Returns
+    ///
+    /// A list of tokens.
+    async fn get_by_tag(&self, tag: &str, value: &[u8]) -> Result<Vec<Token>>;
+
+    /// Delete all tokens with a specific tag/value pair.
+    ///
+    /// # Parameters
+    ///
+    /// - `tag`: The tag to search for.
+    /// - `value`: The value to search for.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the tokens could not be deleted.
+    async fn delete_by_tag(&self, tag: &str, value: &[u8]) -> Result<()>;
 }

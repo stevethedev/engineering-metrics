@@ -1,7 +1,10 @@
 import { useAuth } from "./use-auth";
 import { TokenProvider } from "../../common/token";
 
-type TokenState = [string | null, (token: string | null) => void];
+type TokenState = [
+  string | null,
+  (token: string | null, expires: number) => void
+];
 
 /**
  * Hook to use the token state.
@@ -13,8 +16,8 @@ export const useToken = (
 ): TokenState => {
   const [auth, setAuth] = useAuth();
   const manager = tokenProvider ?? auth.tokenProvider;
-  const setToken = (token: string | null) => {
-    manager.setToken(token);
+  const setToken = (token: string | null, expires: number) => {
+    manager.setToken(token, expires);
     setAuth((auth) => ({ ...auth, tokenProvider: manager }));
   };
   return [manager.token, setToken];

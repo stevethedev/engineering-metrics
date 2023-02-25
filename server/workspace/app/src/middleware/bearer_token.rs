@@ -4,10 +4,11 @@ use actix_web::{
     dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
     Error, HttpMessage,
 };
-pub use lib_authentication::Token;
+
+pub use lib_authentication::AuthToken;
 use lib_base64::decode;
 
-pub type RequestToken = ReqData<Option<Token>>;
+pub type RequestToken = ReqData<Option<AuthToken>>;
 
 /// A middleware that extracts the token from the `Authorization` header.
 #[derive(Default)]
@@ -51,7 +52,7 @@ where
             .and_then(|header| header.to_str().ok())
             .and_then(|header| header.strip_prefix("Bearer "))
             .and_then(|token| decode(token).ok())
-            .map(Token::from);
+            .map(AuthToken::from);
 
         req.extensions_mut().insert(token);
 

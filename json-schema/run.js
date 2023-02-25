@@ -162,10 +162,31 @@ const listFiles = async (dir) => {
   return files_list.flat().filter((file) => file.endsWith(JTD_EXTENSION));
 };
 
+const toSnakeCase = (str) =>
+  str.replaceAll(
+    /([a-z0-9])([A-Z])/g,
+    (match, a, b) => `${a}_${b.toLowerCase()}`
+  );
+
 const rsModCache = {};
 
-const updateRsMods = (dir) => {
+const updateRsMods = async (dir) => {
   let first = true;
+
+  // Convert the field properties to snake-case.
+  const oldFileData = await fs.readFile(path.join(dir, "mod.rs"), {
+    encoding: "utf8",
+  });
+  const newFileData = oldFileData.replaceAll(
+    /^(\s+pub\s+)(\w+)(\s*:\s*)/gm,
+    (match, p1, p2, p3) => {
+      return `${p1}${toSnakeCase(p2)}${p3}`;
+    }
+  );
+  await fs.writeFile(path.join(dir, "mod.rs"), newFileData, {
+    encoding: "utf8",
+  });
+
   while (dir !== OUTPUT_RS_DIR) {
     const modName = path.basename(dir);
     dir = path.dirname(dir);
@@ -262,7 +283,7 @@ const processJtd = async (file) => {
     throw new Error(`Failed to generate code for ${file}`);
   }
 
-  updateRsMods(rsDir);
+  await updateRsMods(rsDir);
   updateTsMods(tsDir);
 };
 

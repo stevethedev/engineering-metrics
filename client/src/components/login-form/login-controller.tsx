@@ -1,6 +1,5 @@
-import { useLoginApi } from "../../lib/auth";
+import { useLoginApi, useToken } from "../../lib/auth";
 import { LoginForm } from "./login-form";
-import { useToken } from "../../lib/auth";
 
 export const LoginController = () => {
   const login = useLoginApi();
@@ -9,10 +8,10 @@ export const LoginController = () => {
   const handleLogin = (props: { username: string; password: string }) => {
     login(props).then(
       (result) => {
-        setToken(result?.token ?? null);
+        setToken(result?.token ?? null, result?.tokenExpires ?? 0);
       },
       () => {
-        setToken(null);
+        setToken(null, 0);
       }
     );
   };

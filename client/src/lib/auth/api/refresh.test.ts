@@ -1,9 +1,9 @@
-import { LoginApi } from "./login";
-import { LoginResponseSuccess } from "../../../generated/auth";
+import { RefreshApi } from "./refresh";
+import { RefreshResponseSuccess } from "../../../generated/auth";
 
-describe("LoginApi", () => {
-  it("sends a POST request to the login API", async () => {
-    const response: LoginResponseSuccess = {
+describe("RefreshApi", () => {
+  it("sends a POST request to the refresh API", async () => {
+    const response: RefreshResponseSuccess = {
       authToken: "token",
       authTokenExpires: ((Date.now() + 1e6) / 1000) | 0,
       refreshToken: "refresh-token-2",
@@ -14,15 +14,12 @@ describe("LoginApi", () => {
       json: jest.fn().mockResolvedValue(response),
     });
 
-    const loginApi = new LoginApi({
-      url: "/auth/login",
+    const refreshApi = new RefreshApi({
+      url: "/auth/refresh",
       requesterOptions: { fetch },
     });
 
-    const result = loginApi.login({
-      username: "username",
-      password: "password",
-    });
+    const result = refreshApi.refresh("refresh-token");
 
     await expect(result).resolves.toEqual({
       token: response.authToken,
@@ -31,7 +28,7 @@ describe("LoginApi", () => {
       refreshExpires: response.refreshTokenExpires * 1000,
     });
     expect(fetch).toHaveBeenCalledWith(
-      "/auth/login",
+      "/auth/refresh",
       expect.objectContaining({
         method: "POST",
       })
@@ -43,15 +40,12 @@ describe("LoginApi", () => {
       ok: false,
     });
 
-    const loginApi = new LoginApi({
-      url: "/auth/login",
+    const refreshApi = new RefreshApi({
+      url: "/auth/refresh",
       requesterOptions: { fetch },
     });
 
-    const result = loginApi.login({
-      username: "username",
-      password: "password",
-    });
+    const result = refreshApi.refresh("refresh-token");
 
     await expect(result).resolves.toEqual(null);
   });

@@ -1,9 +1,9 @@
 use actix_web::{get, post, web, HttpResponse, Responder};
 
 use lib_authentication::Provider;
-use lib_json_schema::schema::auth::{LoginRequest, RegisterRequest};
+use lib_json_schema::schema::auth::{LoginRequest, RefreshRequest, RegisterRequest};
 
-use crate::controllers::auth::{login, logout, register as register_user, whoami};
+use crate::controllers::auth::{login, logout, refresh, register as register_user, whoami};
 use crate::middleware::bearer_token::RequestToken;
 
 /// Registers the routes for the authentication module.
@@ -11,6 +11,7 @@ pub fn register(cfg: &mut web::ServiceConfig) {
     cfg.service(post_login)
         .service(get_whoami)
         .service(get_logout)
+        .service(post_refresh)
         .service(post_register);
 }
 
@@ -31,6 +32,28 @@ async fn post_login(
     login_request: web::Json<LoginRequest>,
 ) -> impl Responder {
     match login(&provider, &login_request).await {
+        None => HttpResponse::Unauthorized().finish(),
+        Some(response) => HttpResponse::Ok().json(response),
+    }
+}
+
+/// Refreshes a token.
+///
+/// # Arguments
+///
+/// - `provider` - The authentication provider.
+/// - `refresh_request` - The refresh request.
+///
+/// # Returns
+///
+/// - HTTP 200 with the token if the refresh was successful.
+/// - HTTP 401 if the refresh failed.
+#[post("/refresh")]
+async fn post_refresh(
+    provider: web::Data<Provider>,
+    refresh_request: web::Json<RefreshRequest>,
+) -> impl Responder {
+    match refresh(provider.as_ref(), &refresh_request).await {
         None => HttpResponse::Unauthorized().finish(),
         Some(response) => HttpResponse::Ok().json(response),
     }

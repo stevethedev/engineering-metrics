@@ -1,4 +1,4 @@
-use lib_authentication::{ProviderInterface, Result, Token};
+use lib_authentication::{AuthToken, ProviderInterface, Result};
 
 /// Logs out the user.
 ///
@@ -10,7 +10,7 @@ use lib_authentication::{ProviderInterface, Result, Token};
 /// # Errors
 ///
 /// Returns an error if the token could not be deleted.
-pub async fn logout(provider: &impl ProviderInterface, token: &Token) -> Result<()> {
-    provider.logout(token).await?;
+pub async fn logout(provider: &impl ProviderInterface, auth_token: &AuthToken) -> Result<()> {
+    provider.logout(auth_token).await?;
     Ok(())
 }

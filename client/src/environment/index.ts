@@ -41,6 +41,14 @@ export const apiAuthLogoutUrl = getEnv(
 );
 
 /**
+ * URL for sending refresh requests to the authentication API.
+ */
+export const apiAuthRefreshUrl = getEnv(
+  process.env.API_AUTH_REFRESH_URL,
+  `${apiAuthUrl}/refresh`
+);
+
+/**
  * URL for sending whoami requests to the authentication API.
  */
 
@@ -53,3 +61,24 @@ export const apiAuthWhoAmIUrl = getEnv(
  * Name of the local storage key for the API token.
  */
 export const apiTokenKey = getEnv(process.env.API_TOKEN_KEY, "token");
+
+/**
+ * Name of the local storage key for the refresh token.
+ */
+export const apiRefreshKey = getEnv(process.env.API_REFRESH_KEY, "refresh");
+
+/**
+ * Name of the local storage key for the token expiration.
+ */
+export const apiTokenExpiresKey = getEnv(
+  process.env.API_TOKEN_EXPIRES_KEY,
+  "tokenExpires"
+);
+
+/**
+ * Name of the local storage key for the refresh token expiration.
+ */
+export const apiRefreshExpiresKey = getEnv(
+  process.env.API_REFRESH_EXPIRES_KEY,
+  "refreshExpires"
+);

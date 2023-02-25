@@ -14,7 +14,7 @@ export const useLogoutApi = (
 
   return useCallback(async (token) => {
     const promise = api.logout(token);
-    setToken(null);
+    setToken(null, 0);
     await promise;
   }, []);
 };

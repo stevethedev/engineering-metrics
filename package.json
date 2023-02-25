@@ -15,7 +15,8 @@
     "lint:server": "node ./.bin/lint.js --server",
     "test": "node ./.bin/test.js --all",
     "test:client": "node ./.bin/test.js --client",
-    "test:server": "node ./.bin/test.js --server"
+    "test:server": "node ./.bin/test.js --server",
+    "test:integration": "node ./.bin/test.js --integration"
   },
   "repository": {
     "type": "git",

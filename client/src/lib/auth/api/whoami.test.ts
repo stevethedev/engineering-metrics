@@ -7,7 +7,7 @@ describe("WhoAmIApi", () => {
       ok: true,
       json: jest.fn().mockResolvedValue({ username: "username" }),
     });
-    const tokenProvider = new TokenManager("token");
+    const tokenProvider = new TokenManager({ authToken: "token" });
 
     const whoAmIApi = new WhoAmIApi({
       url: "/auth/whoami",

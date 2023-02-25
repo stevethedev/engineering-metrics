@@ -1,26 +1,44 @@
-use crate::{Result, Token, TokenRepoInterface};
+use crate::{AuthToken, RefreshToken, Result, TokenRepoInterface};
 
-pub async fn logout(token_repo: &impl TokenRepoInterface, token: &Token) -> Result<()> {
-    token_repo.delete(token).await?;
+pub async fn logout(
+    auth_token_repo: &impl TokenRepoInterface<AuthToken>,
+    refresh_token_repo: &impl TokenRepoInterface<RefreshToken>,
+    token: &AuthToken,
+) -> Result<()> {
+    auth_token_repo.delete(token).await?;
+
+    let tokens = refresh_token_repo
+        .get_by_tag("refresh-token", token.as_ref())
+        .await?;
+    for token in tokens {
+        refresh_token_repo.delete(&token).await?;
+    }
+
     Ok(())
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::TokenInterface;
+
     use super::*;
 
-    #[test]
-    fn test_logout() {
-        let token_repo = crate::TokenRepo::memory();
-        let token = Token::generate(32).unwrap();
+    #[tokio::test]
+    async fn test_logout() {
+        let auth_token_repo = crate::TokenRepo::memory();
+        let refresh_token_repo = crate::TokenRepo::memory();
+        let auth_token = AuthToken::generate(32).unwrap();
         let user_id = uuid::Uuid::new_v4();
 
-        let _ = Box::pin(async move {
-            token_repo.put(&token, &user_id, None).await.unwrap();
-            assert!(token_repo.get(&token).await.is_ok());
+        auth_token_repo
+            .put(&auth_token, &user_id, None)
+            .await
+            .unwrap();
+        assert!(auth_token_repo.get(&auth_token).await.is_ok());
 
-            logout(&token_repo, &token).await.unwrap();
-            assert!(token_repo.get(&token).await.is_err());
-        });
+        logout(&auth_token_repo, &refresh_token_repo, &auth_token)
+            .await
+            .unwrap();
+        assert!(auth_token_repo.get(&auth_token).await.is_err());
     }
 }

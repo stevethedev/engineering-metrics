@@ -1,6 +1,6 @@
 import { Requester, RequesterOptions } from "../../common";
 import { apiAuthLoginUrl } from "../../../environment";
-import { LoginRequest } from "../../../generated/auth";
+import { LoginRequest, LoginResponseSuccess } from "../../../generated/auth";
 import { DeepReadonly } from "ts-essentials";
 
 /**
@@ -17,6 +17,9 @@ export interface LoginCredentials {
  */
 export interface LoginSuccess {
   token: string;
+  tokenExpires: number;
+  refresh: string;
+  refreshExpires: number;
 }
 
 /**
@@ -69,7 +72,17 @@ export class LoginApi implements LoginController {
     );
 
     if (response.ok) {
-      return (await response.json()) as LoginResult;
+      const result = (await response.json()) as LoginResponseSuccess;
+      const { authToken, authTokenExpires, refreshTokenExpires, refreshToken } =
+        result;
+
+      return {
+        token: authToken,
+        tokenExpires: authTokenExpires * 1000,
+
+        refresh: refreshToken,
+        refreshExpires: refreshTokenExpires * 1000,
+      };
     }
 
     return null;

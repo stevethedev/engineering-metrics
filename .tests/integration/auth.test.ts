@@ -38,6 +38,12 @@ describe("Auth", () => {
       (error) => error.response
     );
 
+  const sendRefreshRequest = async (refreshToken: string) =>
+    axios.post(`${apiHost}/auth/refresh`, { refreshToken }).then(
+      (response) => response,
+      (error) => error.response
+    );
+
   describe("HTTP POST /auth/register", () => {
     it("should succeed with valid credentials", async () => {
       const credentials = {
@@ -50,14 +56,19 @@ describe("Auth", () => {
 
       const loginResult = await sendLoginRequest(credentials);
       expect(loginResult.status).toBe(200);
-      expect(loginResult.data).toHaveProperty("token");
+      expect(loginResult.data).toMatchObject({
+        authToken: expect.any(String),
+        authTokenExpires: expect.any(Number),
+        refreshToken: expect.any(String),
+        refreshTokenExpires: expect.any(Number),
+      });
     });
   });
 
   describe("HTTP GET /auth/logout", () => {
     it("should succeed with valid token", async () => {
       const response = await sendLoginRequest(authCredentials);
-      const token = response.data.token;
+      const token = response.data.authToken;
 
       const result = await sendLogoutRequest(token);
 
@@ -79,7 +90,12 @@ describe("Auth", () => {
       const result = await sendLoginRequest(credentials);
 
       expect(result.status).toBe(200);
-      expect(result.data).toHaveProperty("token");
+      expect(result.data).toMatchObject({
+        authToken: expect.any(String),
+        authTokenExpires: expect.any(Number),
+        refreshToken: expect.any(String),
+        refreshTokenExpires: expect.any(Number),
+      });
     });
 
     it("should fail with invalid credentials", async () => {
@@ -110,7 +126,7 @@ describe("Auth", () => {
   describe("HTTP GET /auth/whoami", () => {
     it("should succeed with valid token", async () => {
       const response = await sendLoginRequest(authCredentials);
-      const token = response.data.token;
+      const token = response.data.authToken;
 
       const result = await sendWhoAmIRequest(token);
 
@@ -122,6 +138,66 @@ describe("Auth", () => {
     it("should fail with invalid token", async () => {
       const result = await sendWhoAmIRequest("invalid-token");
       expect(result.status).toBe(401);
+    });
+  });
+
+  describe("HTTP POST /auth/refresh", () => {
+    it("should succeed with valid refresh token", async () => {
+      const response = await sendLoginRequest(authCredentials);
+      const refreshToken = response.data.refreshToken;
+
+      const result = await sendRefreshRequest(refreshToken);
+
+      expect(result.status).toBe(200);
+      expect(result.data).toMatchObject({
+        authToken: expect.any(String),
+        authTokenExpires: expect.any(Number),
+        refreshToken: expect.any(String),
+        refreshTokenExpires: expect.any(Number),
+      });
+    });
+
+    it("should fail with invalid refresh token", async () => {
+      const result = await sendRefreshRequest("invalid-token");
+      expect(result.status).toBe(401);
+    });
+
+    it("should invalidate the old token after refresh", async () => {
+      const response = await sendLoginRequest(authCredentials);
+      const refreshToken = response.data.refreshToken;
+
+      const result = await sendRefreshRequest(refreshToken);
+
+      expect(result.status).toBe(200);
+      expect(result.data).toMatchObject({
+        authToken: expect.any(String),
+        authTokenExpires: expect.any(Number),
+        refreshToken: expect.any(String),
+        refreshTokenExpires: expect.any(Number),
+      });
+
+      const oldToken = response.data.authToken;
+      const whoAmIResult = await sendWhoAmIRequest(oldToken);
+      expect(whoAmIResult.status).toBe(401);
+    });
+
+    it("should invalidate the old refresh token after refresh", async () => {
+      const response = await sendLoginRequest(authCredentials);
+      const refreshToken = response.data.refreshToken;
+
+      const result = await sendRefreshRequest(refreshToken);
+
+      expect(result.status).toBe(200);
+      expect(result.data).toMatchObject({
+        authToken: expect.any(String),
+        authTokenExpires: expect.any(Number),
+        refreshToken: expect.any(String),
+        refreshTokenExpires: expect.any(Number),
+      });
+
+      const oldRefreshToken = response.data.refreshToken;
+      const refreshResult = await sendRefreshRequest(oldRefreshToken);
+      expect(refreshResult.status).toBe(401);
     });
   });
 });

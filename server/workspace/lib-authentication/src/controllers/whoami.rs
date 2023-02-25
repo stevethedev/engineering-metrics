@@ -1,5 +1,5 @@
 use crate::user_repo::User;
-use crate::{Result, Token, TokenRepoInterface, UserRepoInterface};
+use crate::{AuthToken, Result, TokenRepoInterface, UserRepoInterface};
 
 /// Reads the user from the token.
 ///
@@ -13,11 +13,11 @@ use crate::{Result, Token, TokenRepoInterface, UserRepoInterface};
 ///
 /// Returns the user if the token is valid, `None` otherwise.
 pub async fn whoami(
-    token_repo: &impl TokenRepoInterface,
+    auth_token_repo: &impl TokenRepoInterface<AuthToken>,
     user_repo: &impl UserRepoInterface,
-    token: &Token,
+    token: &AuthToken,
 ) -> Result<Option<User>> {
-    let user_id = token_repo.get(token).await?;
+    let user_id = auth_token_repo.get(token).await?;
     let user = user_repo.get(user_id).await?;
 
     Ok(user)
@@ -25,27 +25,26 @@ pub async fn whoami(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::user_repo::CreateUser;
-    use crate::{TokenRepo, UserRepo};
+    use crate::{TokenInterface, TokenRepo, UserRepo};
 
-    #[test]
-    fn test_whoami() {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_whoami() {
         let user_repo = UserRepo::memory();
         let token_repo = TokenRepo::memory();
 
-        let _ = Box::pin(async move {
-            let user_id = user_repo
-                .create(&CreateUser {
-                    username: "test",
-                    password: "test",
-                })
-                .await
-                .unwrap();
-            let token = Token::generate(32).unwrap();
-            token_repo.put(&token, &user_id, None).await.unwrap();
-            let user = whoami(&token_repo, &user_repo, &token).await.unwrap();
-            assert!(user.is_some());
-        });
+        let user_id = user_repo
+            .create(&CreateUser {
+                username: "test",
+                password: "test",
+            })
+            .await
+            .unwrap();
+        let token = AuthToken::generate(32).unwrap();
+        token_repo.put(&token, &user_id, None).await.unwrap();
+        let user = whoami(&token_repo, &user_repo, &token).await.unwrap();
+        assert!(user.is_some());
     }
 }

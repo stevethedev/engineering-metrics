@@ -1,23 +1,10 @@
-use crate::Result;
 use bytes::{Bytes, BytesMut};
+
 use lib_crypto::fill_bytes;
 
-/// A token is a random string of bytes.
-///
-/// # Example
-///
-/// ```
-/// use lib_authentication::Token;
-///
-/// let token = Token::generate(32).unwrap();
-/// assert_eq!(token.len(), 32);
-/// ```
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Token {
-    token: Bytes,
-}
+use crate::Result;
 
-impl Token {
+pub trait Interface: From<Vec<u8>> + AsRef<[u8]> + Send + Sync {
     /// Generate a new token of the given size, filled with random bytes.
     ///
     /// # Parameters
@@ -31,7 +18,66 @@ impl Token {
     /// # Errors
     ///
     /// Returns an error if the token could not be generated.
-    pub fn generate(size: usize) -> Result<Self> {
+    fn generate(size: usize) -> Result<Self>
+    where
+        Self: Sized;
+
+    /// Get the size of the token in bytes.
+    ///
+    /// # Returns
+    ///
+    /// The size of the token in bytes.
+    fn len(&self) -> usize;
+
+    /// Check if the token is empty.
+    ///
+    /// # Returns
+    ///
+    /// `true` if the token is empty, `false` otherwise.
+    fn is_empty(&self) -> bool;
+
+    /// Convert the token to a string.
+    ///
+    /// # Returns
+    ///
+    /// The token as a string, or else None if the token could not be converted.
+    fn to_string(&self) -> Option<String>;
+}
+
+/// A token is a random string of bytes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Token {
+    token: Bytes,
+}
+
+impl Token {
+    /// Create an empty token.
+    ///
+    /// # Returns
+    ///
+    /// The empty token.
+    pub fn empty() -> Self {
+        Token {
+            token: Bytes::new(),
+        }
+    }
+}
+
+impl Interface for Token {
+    /// Generate a new token of the given size, filled with random bytes.
+    ///
+    /// # Parameters
+    ///
+    /// - `size`: The size of the token in bytes.
+    ///
+    /// # Returns
+    ///
+    /// The generated token.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the token could not be generated.
+    fn generate(size: usize) -> Result<Self> {
         let mut token = BytesMut::zeroed(size);
         fill_bytes(&mut token)?;
         let token = token.freeze();
@@ -43,7 +89,7 @@ impl Token {
     /// # Returns
     ///
     /// The size of the token in bytes.
-    pub fn len(&self) -> usize {
+    fn len(&self) -> usize {
         self.token.len()
     }
 
@@ -52,7 +98,7 @@ impl Token {
     /// # Returns
     ///
     /// `true` if the token is empty, `false` otherwise.
-    pub fn is_empty(&self) -> bool {
+    fn is_empty(&self) -> bool {
         self.token.is_empty()
     }
 
@@ -61,7 +107,7 @@ impl Token {
     /// # Returns
     ///
     /// The token as a string, or `None` if the token is not valid UTF-8.
-    pub fn to_string(&self) -> Option<String> {
+    fn to_string(&self) -> Option<String> {
         String::from_utf8(self.as_ref().to_vec()).ok()
     }
 }

@@ -1,7 +1,7 @@
 {
   "$schema": "../schema.json",
   "metadata": {
-    "description": "Response from a successful authentication request."
+    "description": "A response from a successful refresh request."
   },
   "properties": {
     "authToken": {

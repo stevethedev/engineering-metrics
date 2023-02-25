@@ -13,6 +13,9 @@ describe("useLogoutApi", () => {
     });
     const tokenProvider: TokenProvider = {
       token: "test-token",
+      refresh: "test-refresh",
+      refreshToken: jest.fn(),
+      setRefresh: jest.fn(),
       setToken: jest.fn(),
       clearToken: jest.fn(),
     };

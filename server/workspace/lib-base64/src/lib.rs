@@ -7,18 +7,19 @@
     clippy::pedantic
 )]
 
-mod decode;
-mod encode;
-mod error;
-
 pub use decode::{decode, into as decode_into, Decode};
 pub use encode::{encode, into as encode_into, Encode};
 pub use error::{Error, Result};
 
+mod decode;
+mod encode;
+mod error;
+
 #[cfg(test)]
 mod tests {
-    use super::*;
     use proptest::prelude::*;
+
+    use super::*;
 
     proptest! {
         #[test]
@@ -49,7 +50,7 @@ mod tests {
             bytes in prop::collection::vec(any::<u8>(), 0..128)
         ) {
             let encoded = encode(&bytes).unwrap();
-            let decoded = decode(&encoded).unwrap();
+            let decoded = decode(encoded).unwrap();
 
             assert_eq!(decoded, bytes);
         }
@@ -63,7 +64,7 @@ mod tests {
 
         assert_eq!(len, 26);
         assert_eq!(&target[..len], b"ZXhhbXBsZSBieXRlc3RyaW5nIQ");
-        assert_eq!(&target[..len + 1], b"ZXhhbXBsZSBieXRlc3RyaW5nIQ\0");
+        assert_eq!(&target[..=len], b"ZXhhbXBsZSBieXRlc3RyaW5nIQ\0");
     }
 
     #[test]

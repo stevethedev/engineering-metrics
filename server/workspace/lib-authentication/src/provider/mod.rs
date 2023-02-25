@@ -1,5 +1,6 @@
-mod core;
-mod interface;
+pub use interface::Interface;
 
 pub use self::core::Core as Provider;
-pub use interface::Interface;
+
+mod core;
+mod interface;

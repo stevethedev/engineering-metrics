@@ -19,8 +19,11 @@ describe("useWhoAmI", () => {
     });
     const tokenProvider: TokenProvider = {
       token: "test",
+      refresh: "refresh-test",
       clearToken: jest.fn(),
       setToken: jest.fn(),
+      refreshToken: jest.fn(),
+      setRefresh: jest.fn(),
     };
 
     renderHook(

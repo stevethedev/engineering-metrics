@@ -1,13 +1,15 @@
-mod interface;
-mod memory;
-
-use crate::Token;
-use async_trait::async_trait;
-pub use interface::{Error, Interface, Result};
 use std::time::Duration;
+
+use async_trait::async_trait;
 use uuid::Uuid;
 
+pub use interface::{Error, Interface, Result};
 pub use memory::TokenRepo as Memory;
+
+use crate::{TokenInterface, TokenRepoInterface};
+
+mod interface;
+mod memory;
 
 /// The master token repository.
 ///
@@ -16,11 +18,11 @@ pub use memory::TokenRepo as Memory;
 /// ```
 /// use lib_authentication::TokenRepo;
 #[derive(Clone)]
-pub struct TokenRepo {
-    repo: std::sync::Arc<Box<dyn Interface>>,
+pub struct TokenRepo<Token: TokenInterface> {
+    repo: std::sync::Arc<Box<dyn TokenRepoInterface<Token>>>,
 }
 
-impl TokenRepo {
+impl<Token: TokenInterface> TokenRepo<Token> {
     #[must_use]
     pub fn memory() -> Self {
         let repo = Memory::default();
@@ -31,7 +33,7 @@ impl TokenRepo {
 }
 
 #[async_trait]
-impl Interface for TokenRepo {
+impl<Token: TokenInterface> TokenRepoInterface<Token> for TokenRepo<Token> {
     async fn put(&self, token: &Token, user_id: &Uuid, ttl: Option<&Duration>) -> Result<()> {
         self.repo.put(token, user_id, ttl).await
     }
@@ -42,5 +44,17 @@ impl Interface for TokenRepo {
 
     async fn delete(&self, token: &Token) -> Result<()> {
         self.repo.delete(token).await
+    }
+
+    async fn put_tag(&self, token: &Token, tag: &str, value: &[u8]) -> Result<()> {
+        self.repo.put_tag(token, tag, value).await
+    }
+
+    async fn get_by_tag(&self, tag: &str, value: &[u8]) -> Result<Vec<Token>> {
+        self.repo.get_by_tag(tag, value).await
+    }
+
+    async fn delete_by_tag(&self, tag: &str, value: &[u8]) -> Result<()> {
+        self.repo.delete_by_tag(tag, value).await
     }
 }

@@ -1,4 +1,4 @@
-use lib_authentication::{ProviderInterface, Token};
+use lib_authentication::{AuthToken, ProviderInterface};
 use lib_json_schema::schema::auth::WhoamiResponse;
 
 /// Returns the user information for the given token.
@@ -14,10 +14,9 @@ use lib_json_schema::schema::auth::WhoamiResponse;
 /// - `Some` if the token is valid.
 pub async fn whoami(
     provider: &impl ProviderInterface,
-    bearer_token: Option<&Token>,
+    auth_token: Option<&AuthToken>,
 ) -> Option<WhoamiResponse> {
-    let bearer_token = bearer_token?;
-    let user = provider.whoami(bearer_token).await.ok()??;
+    let user = provider.whoami(auth_token?).await.ok()??;
 
     Some(WhoamiResponse {
         id: user.id.to_string(),

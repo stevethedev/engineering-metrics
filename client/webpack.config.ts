@@ -42,6 +42,10 @@ const config: Configuration = {
       API_AUTH_LOGOUT_URL: null,
       API_AUTH_WHOAMI_URL: null,
       API_TOKEN_KEY: null,
+      API_TOKEN_EXPIRES_KEY: null,
+      API_REFRESH_KEY: null,
+      API_REFRESH_EXPIRES_KEY: null,
+      API_AUTH_REFRESH_URL: null,
     }),
   ],
   module: {

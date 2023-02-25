@@ -4,13 +4,25 @@ import { Provider } from "../provider";
 
 describe("useToken", () => {
   it("can update the token", () => {
-    const token = "test";
-    const { result } = renderHook(() => useToken(), { wrapper: Provider });
+    const token = "some-other-token";
+    const tokenExpires = Date.now() + 1e6;
+    const tokenProvider = {
+      token: "test-token",
+      refresh: null,
+      refreshToken: jest.fn(),
+      setRefresh: jest.fn(),
+      setToken: jest.fn(),
+      clearToken: jest.fn(),
+    };
 
-    expect(result.current[0]).toEqual(null);
+    const { result } = renderHook(() => useToken(tokenProvider), {
+      wrapper: Provider,
+    });
 
-    act(() => result.current[1](token));
+    expect(result.current[0]).toBe(tokenProvider.token);
 
-    expect(result.current[0]).toEqual(token);
+    act(() => result.current[1](token, tokenExpires));
+
+    expect(tokenProvider.setToken).toHaveBeenCalledWith(token, tokenExpires);
   });
 });
