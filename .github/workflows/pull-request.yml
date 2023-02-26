@@ -43,7 +43,7 @@ jobs:
             server/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: 'Install dependencies'
-        run: npm run install
+        run: TEMP_DIR="${{ runner.tempdir }}" npm run install
       - name: 'Lint'
         run: npm run lint
       - name: 'Client Tests'
