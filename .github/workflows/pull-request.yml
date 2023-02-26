@@ -1,5 +1,4 @@
 name: 'PR Checks'
-description: 'Run the automated checks on a PR'
 on:
   pull_request:
     branches:
