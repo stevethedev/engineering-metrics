@@ -8,4 +8,4 @@ ENV CLIENT_URL=$CLIENT_URL
 
 RUN mkdir /etc/nginx/templates
 
-COPY ./nginx/default.conf.template /etc/nginx/templates
+COPY ./infrastructure/nginx/default.conf.template /etc/nginx/templates

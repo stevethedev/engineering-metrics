@@ -9,6 +9,8 @@
 
 use actix_web::{middleware as aw_middleware, web, App, HttpServer};
 
+use lib_environment::EnvironmentVariable;
+
 mod controllers;
 mod middleware;
 mod routes;
@@ -24,6 +26,14 @@ async fn main() -> std::io::Result<()> {
     let auth_provider =
         lib_authentication::Provider::new(auth_token_repo, refresh_token_repo, user_repo);
     let auth_provider = web::Data::new(auth_provider);
+
+    let db_connection = lib_database::Connection::connect(lib_database::Options::new(
+        lib_environment::DbConnectionString::get(),
+    ))
+    .await
+    .unwrap();
+    println!("Database connection established");
+    db_connection.disconnect().await.unwrap();
 
     HttpServer::new(move || {
         App::new()

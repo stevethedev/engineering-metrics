@@ -4,6 +4,9 @@ networks:
   default:
     driver: bridge
 
+volumes:
+  db-data:
+
 services:
   nginx:
     container_name: nginx
@@ -16,8 +19,26 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    depends_on:
+      - server
+      - client
     networks:
       - default
+
+  database:
+    container_name: database
+    image: postgres:15-alpine3.17
+    environment:
+      POSTGRES_USER: ${DATABASE_USER:-postgres}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      POSTGRES_DB: ${DATABASE_NAME:-postgres}
+    ports:
+      - "5432:5432"
+    networks:
+      - default
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./infrastructure/database/init:/docker-entrypoint-initdb.d:rwx
 
   server:
     container_name: server
@@ -26,8 +47,11 @@ services:
       dockerfile: docker.server.Dockerfile
       args:
         NODE_ENV: development
+    depends_on:
+      - database
     environment:
       RUST_LOG: ${SERVER_RUST_LOG:-}
+      APP_DB_CONNECTION_STRING: ${SERVER_DB_CONNECTION_STRING:-}
     ports:
       - "8081:80"
     networks:
