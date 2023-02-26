@@ -5,7 +5,7 @@ on:
       - 'main'
 
 env:
-  TEMP_DIR: ${{ runner.tempdir }}
+  TEMP_DIR: ${{ runner.temp }}
 
 jobs:
   test:
