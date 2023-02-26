@@ -4,9 +4,6 @@ on:
     branches:
       - 'main'
 
-env:
-  TEMP_DIR: ${{ runner.temp }}
-
 jobs:
   test:
     name: 'Test'
@@ -48,6 +45,8 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: 'Install dependencies'
         run: npm run install
+        env:
+          TEMP_DIR: ${{ runner.temp }}
       - name: 'Lint'
         run: npm run lint
       - name: 'Client Tests'
