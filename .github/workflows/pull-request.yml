@@ -3,6 +3,10 @@ on:
   pull_request:
     branches:
       - 'main'
+
+env:
+  TEMP_DIR: ${{ runner.tempdir }}
+
 jobs:
   test:
     name: 'Test'
@@ -43,7 +47,7 @@ jobs:
             server/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: 'Install dependencies'
-        run: TEMP_DIR="${{ runner.tempdir }}" npm run install
+        run: npm run install
       - name: 'Lint'
         run: npm run lint
       - name: 'Client Tests'

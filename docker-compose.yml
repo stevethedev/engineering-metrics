@@ -51,7 +51,7 @@ services:
       - database
     environment:
       RUST_LOG: ${SERVER_RUST_LOG:-}
-      APP_DB_CONNECTION_STRING: ${SERVER_DB_CONNECTION_STRING:-}
+      APP_DB_CONNECTION_STRING: ${SERVER_DB_CONNECTION_STRING:-postgres://postgres:postgres@database:5432/postgres}
     ports:
       - "8081:80"
     networks:
