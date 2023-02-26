@@ -6,4 +6,42 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies.actix-web]
-version = "4.3.0"
+version = "4.3"
+
+[dependencies.bytes]
+version = "1.4"
+
+[dependencies.chrono]
+version = "0.4"
+
+[dependencies.futures]
+version = "0.3"
+
+[dependencies.lib-authentication]
+path = "../lib-authentication"
+
+[dependencies.lib-base64]
+path = "../lib-base64"
+
+[dependencies.lib-crypto]
+path = "../lib-crypto"
+
+[dependencies.lib-environment]
+path = "../lib-environment"
+
+[dependencies.lib-json-schema]
+path = "../lib-json-schema"
+
+[dependencies.log]
+version = "0.4"
+
+[dependencies.env_logger]
+version = "0.10"
+
+[dependencies.serde]
+version = "1.0"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "1.0"
+

@@ -1,4 +1,8 @@
+.env
 client/coverage
 client/dist
 client/node_modules
+client/src/generated
 server/target
+server/workspace/lib-json-schema/src/generated
+nginx/node_modules

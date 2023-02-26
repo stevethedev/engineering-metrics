@@ -1,0 +1,32 @@
+{
+  "$schema": "../schema.json",
+  "metadata": {
+    "description": "Response from a successful authentication request."
+  },
+  "properties": {
+    "authToken": {
+      "type": "string",
+      "metadata": {
+        "description": "The new token to use for future requests."
+      }
+    },
+    "authTokenExpires": {
+      "type": "uint32",
+      "metadata": {
+        "description": "The date and time when the token will expire, represented in seconds after unix-epoch."
+      }
+    },
+    "refreshToken": {
+      "type": "string",
+      "metadata": {
+        "description": "The new refresh token to use for future refresh requests."
+      }
+    },
+    "refreshTokenExpires": {
+      "type": "uint32",
+      "metadata": {
+        "description": "The date and time when the refresh token will expire, represented in seconds after unix-epoch."
+      }
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "engineering-metrics",
+  "version": "1.0.0",
+  "description": "```shell\r node json-schema/run.js\r ```",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./.bin/start.js",
+    "start:no-build": "node ./.bin/start.js --no-build",
+    "install": "node ./.bin/install.js --all",
+    "install:client": "node ./.bin/install.js --client",
+    "install:server": "node ./.bin/install.js --server",
+    "install:json-schema": "node ./.bin/install.js --json-schema",
+    "lint": "node ./.bin/lint.js --all",
+    "lint:client": "node ./.bin/lint.js --client",
+    "lint:server": "node ./.bin/lint.js --server",
+    "test": "node ./.bin/test.js --all",
+    "test:client": "node ./.bin/test.js --client",
+    "test:server": "node ./.bin/test.js --server",
+    "test:integration": "node ./.bin/test.js --integration"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevethedev/engineering-metrics.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stevethedev/engineering-metrics/issues"
+  },
+  "homepage": "https://github.com/stevethedev/engineering-metrics#readme"
+}

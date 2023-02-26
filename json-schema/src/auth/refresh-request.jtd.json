@@ -1,0 +1,14 @@
+{
+  "$schema": "../schema.json",
+  "metadata": {
+    "description": "Request a new access token using the given refresh token."
+  },
+  "properties": {
+    "refreshToken": {
+      "type": "string",
+      "metadata": {
+        "description": "The refresh token to use to get a new access token."
+      }
+    }
+  }
+}

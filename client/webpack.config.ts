@@ -4,7 +4,7 @@ import path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import WorkboxWebpackPlugin from "workbox-webpack-plugin";
-import type { Configuration } from "webpack";
+import { Configuration, EnvironmentPlugin } from "webpack";
 import "webpack-dev-server";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -13,8 +13,15 @@ const stylesHandler = isProduction
   ? MiniCssExtractPlugin.loader
   : "style-loader";
 
+const envData = Object.keys(process.env).reduce<
+  Record<string, string | null | undefined>
+>((acc, key) => {
+  acc[key] = null;
+  return acc;
+}, {});
+
 const config: Configuration = {
-  entry: "./src/index.ts",
+  entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "dist"),
   },
@@ -27,8 +34,19 @@ const config: Configuration = {
       template: "index.html",
     }),
 
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
+    new EnvironmentPlugin({
+      ...envData,
+      API_BASE_URL: null,
+      API_AUTH_URL: null,
+      API_AUTH_LOGIN_URL: null,
+      API_AUTH_LOGOUT_URL: null,
+      API_AUTH_WHOAMI_URL: null,
+      API_TOKEN_KEY: null,
+      API_TOKEN_EXPIRES_KEY: null,
+      API_REFRESH_KEY: null,
+      API_REFRESH_EXPIRES_KEY: null,
+      API_AUTH_REFRESH_URL: null,
+    }),
   ],
   module: {
     rules: [
@@ -62,10 +80,8 @@ const config: Configuration = {
 export default () => {
   if (isProduction) {
     config.mode = "production";
-
-    config.plugins.push(new MiniCssExtractPlugin());
-
-    config.plugins.push(new WorkboxWebpackPlugin.GenerateSW());
+    config.plugins?.push(new MiniCssExtractPlugin());
+    config.plugins?.push(new WorkboxWebpackPlugin.GenerateSW());
   } else {
     config.mode = "development";
   }

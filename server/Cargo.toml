@@ -1,4 +1,9 @@
 [workspace]
 members = [
-    "workspace/app"
+    "workspace/app",
+    "workspace/lib-authentication",
+    "workspace/lib-base64",
+    "workspace/lib-crypto",
+    "workspace/lib-environment",
+    "workspace/lib-json-schema",
 ]
