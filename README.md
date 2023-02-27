@@ -2,6 +2,8 @@
 
 ```shell
 node json-schema/run.js
+
+cargo install sea-orm-cli
 ```
 
 ## Server Environment Variables

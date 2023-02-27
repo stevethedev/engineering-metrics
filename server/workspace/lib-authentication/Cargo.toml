@@ -21,6 +21,9 @@ version = "1.4"
 [dependencies.lib-crypto]
 path = "../lib-crypto"
 
+[dependencies.lib-database]
+path = "../lib-database"
+
 [dependencies.lib-environment]
 path = "../lib-environment"
 

@@ -1,9 +1,11 @@
-mod interface;
-mod memory;
-
 use async_trait::async_trait;
+
 pub use interface::{CreateUser, Error, Interface, Result, UpdateUser, User, UserId};
 pub use memory::Repo as Memory;
+
+mod database;
+mod interface;
+mod memory;
 
 /// The master user repository.
 #[derive(Clone)]

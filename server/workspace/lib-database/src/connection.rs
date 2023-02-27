@@ -1,17 +1,28 @@
 use std::{borrow::Cow, time::Duration};
 
-use async_trait::async_trait;
 pub use log::LevelFilter;
 use sea_orm::ConnectOptions;
+
+use lib_database_migration::{Migrator, MigratorTrait};
 
 use crate::{Error, Result};
 
 /// A database connection controller.
+#[derive(Clone)]
 pub struct Connection {
     connection: sea_orm::DatabaseConnection,
 }
 
 impl Connection {
+    /// Open a connection to the database.
+    ///
+    /// # Arguments
+    ///
+    /// * `options` - The database connection options.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the connection could not be established.
     pub async fn connect(options: Options) -> Result<Self> {
         let connection = sea_orm::Database::connect(options.options)
             .await
@@ -19,7 +30,23 @@ impl Connection {
         Ok(Self { connection })
     }
 
+    /// Run any pending database migrations.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the migrations could not be applied.
+    pub async fn migrate(&self) -> Result<()> {
+        Migrator::up(&self.connection, None)
+            .await
+            .map_err(|e| Error::Migration(e.to_string()))?;
+        Ok(())
+    }
+
     /// Close the connection controller.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the connection could not be closed.
     pub async fn disconnect(self) -> Result<()> {
         self.connection
             .close()

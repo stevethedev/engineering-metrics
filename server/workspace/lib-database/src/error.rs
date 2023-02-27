@@ -7,4 +7,7 @@ pub enum Error {
 
     #[error("Database query error: {0}")]
     Query(String),
+
+    #[error("Database migration error: {0}")]
+    Migration(String),
 }
