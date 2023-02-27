@@ -1,3 +1,4 @@
+const fs = require("fs");
 const path = require("path");
 const { SEA_ORM_CLI, run } = require("./lib/exec");
 
@@ -15,7 +16,9 @@ const main = async () => {
     "..",
     "server",
     "workspace",
-    "lib-database-migration"
+    "lib-database-migration",
+    "src",
+    "migrations"
   );
 
   const isAdded = await run(SEA_ORM_CLI, [
@@ -29,6 +32,12 @@ const main = async () => {
     process.stdout.write("Migration generation failed\n");
     process.exit(1);
   }
+
+  const modData = fs.readFileSync(path.resolve(migrationDir, "mod.rs"), "utf8");
+  fs.writeFileSync(
+    path.resolve(migrationDir, "mod.rs"),
+    modData.replace(/^mod $/gm, "pub mod ")
+  );
 
   process.stdout.write("Migration generation complete\n");
 };

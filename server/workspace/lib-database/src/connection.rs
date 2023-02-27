@@ -56,6 +56,12 @@ impl Connection {
     }
 }
 
+impl AsRef<sea_orm::DatabaseConnection> for Connection {
+    fn as_ref(&self) -> &sea_orm::DatabaseConnection {
+        &self.connection
+    }
+}
+
 /// A database connection configuration object.
 pub struct Options {
     options: ConnectOptions,

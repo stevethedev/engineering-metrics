@@ -1,9 +1,9 @@
 pub use self::{
     connection::{Connection, LevelFilter, Options},
     error::{Error, Result},
-    tables::*,
 };
 
 mod connection;
+mod controllers;
+mod entities;
 mod error;
-mod tables;
