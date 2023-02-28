@@ -1,5 +1,9 @@
 use sea_orm_migration::prelude::*;
 
+use lib_crypto::hash_password;
+
+use crate::sea_orm::prelude::Uuid;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -57,6 +61,24 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await?;
+
+        let insert = Query::insert()
+            .into_table(UserCredentials::Table)
+            .columns([
+                UserCredentials::Id,
+                UserCredentials::Username,
+                UserCredentials::PasswordHash,
+                UserCredentials::IsEnabled,
+            ])
+            .values_panic([
+                Uuid::new_v4().into(),
+                "admin".into(),
+                hash_password(b"admin").unwrap().into(),
+                true.into(),
+            ])
+            .to_owned();
+
+        manager.exec_stmt(insert).await?;
 
         Ok(())
     }

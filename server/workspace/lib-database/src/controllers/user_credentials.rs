@@ -16,11 +16,45 @@ pub struct Filter {
     pub is_enabled: Option<bool>,
 }
 
+impl Filter {
+    pub fn id(mut self, id: Uuid) -> Self {
+        self.id = Some(id);
+        self
+    }
+
+    pub fn username(mut self, username: String) -> Self {
+        self.username = Some(username);
+        self
+    }
+
+    pub fn enabled(mut self, is_enabled: bool) -> Self {
+        self.is_enabled = Some(is_enabled);
+        self
+    }
+}
+
 #[derive(Default)]
 pub struct Write {
     pub username: Option<String>,
     pub password_hash: Option<String>,
     pub is_enabled: Option<bool>,
+}
+
+impl Write {
+    pub fn username(mut self, username: String) -> Self {
+        self.username = Some(username);
+        self
+    }
+
+    pub fn password_hash(mut self, password_hash: String) -> Self {
+        self.password_hash = Some(password_hash);
+        self
+    }
+
+    pub fn enabled(mut self, is_enabled: bool) -> Self {
+        self.is_enabled = Some(is_enabled);
+        self
+    }
 }
 
 impl Controller {
@@ -36,7 +70,7 @@ impl Controller {
             tmp
         };
 
-        user_credentials.save(self.connection.as_ref()).await?;
+        user_credentials.insert(self.connection.as_ref()).await?;
 
         Ok(id)
     }
@@ -76,6 +110,22 @@ impl Controller {
 
         let result = get_filter(UserCredentials::update_many(), filter)
             .set(write)
+            .exec(self.connection.as_ref())
+            .await?;
+
+        Ok(result.rows_affected)
+    }
+
+    pub async fn delete(&self, id: Uuid) -> Result<u64> {
+        let result = UserCredentials::delete_by_id(id)
+            .exec(self.connection.as_ref())
+            .await?;
+
+        Ok(result.rows_affected)
+    }
+
+    pub async fn delete_many(&self, filter: Filter) -> Result<u64> {
+        let result = get_filter(UserCredentials::delete_many(), filter)
             .exec(self.connection.as_ref())
             .await?;
 

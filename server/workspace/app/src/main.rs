@@ -19,20 +19,22 @@ async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     let logger_format = "%a %t \"%r\" %s %b \"%{Referer}i\" \"%{User-Agent}i\" %D";
 
-    let auth_token_repo = lib_authentication::TokenRepo::memory();
-    let refresh_token_repo = lib_authentication::TokenRepo::memory();
-    let user_repo = lib_authentication::UserRepo::memory();
-    let auth_provider =
-        lib_authentication::Provider::new(auth_token_repo, refresh_token_repo, user_repo);
-    let auth_provider = web::Data::new(auth_provider);
-
-    let Ok(db_connection) = database::open().await.map(web::Data::new) else {
+    let Ok(db_connection) = database::open().await else {
         log::error!("Failed to open database connection");
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
             "Failed to open database connection",
         ));
     };
+
+    let user_repo = lib_authentication::UserRepo::database(db_connection.clone());
+
+    let auth_token_repo = lib_authentication::TokenRepo::memory();
+    let refresh_token_repo = lib_authentication::TokenRepo::memory();
+    // let user_repo = lib_authentication::UserRepo::memory();
+    let auth_provider =
+        lib_authentication::Provider::new(auth_token_repo, refresh_token_repo, user_repo);
+    let auth_provider = web::Data::new(auth_provider);
 
     HttpServer::new(move || {
         App::new()

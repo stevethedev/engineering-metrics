@@ -4,8 +4,12 @@ version = "0.1.0"
 edition = "2021"
 publish = false
 
-[dependencies]
-async-std = { version = "1", features = ["attributes", "tokio1"] }
+[dependencies.async-std]
+version = "1"
+features = ["attributes", "tokio1"]
+
+[dependencies.lib-crypto]
+path = "../lib-crypto"
 
 [dependencies.sea-query]
 version = "0.28"
