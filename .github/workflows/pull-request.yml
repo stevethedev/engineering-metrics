@@ -1,20 +1,20 @@
 name: 'PR Checks'
-description: 'Run the automated checks on a PR'
 on:
   pull_request:
     branches:
       - 'main'
+
 jobs:
   test:
     name: 'Test'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: 'Setup Node.js'
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: 18
           cache: 'npm'
           cache-dependency-path: |
             package-lock.json
@@ -23,7 +23,6 @@ jobs:
             .tests/package.json
             client/package-lock.json
             client/package.json
-          repository-url: 'https://registry.npmjs.org'
       - name: 'Setup Rust'
         uses: actions-rs/toolchain@v1
         with:
@@ -45,7 +44,9 @@ jobs:
             server/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: 'Install dependencies'
-        run: npm run install:all
+        run: npm run install
+        env:
+          TEMP_DIR: ${{ runner.temp }}
       - name: 'Lint'
         run: npm run lint
       - name: 'Client Tests'

@@ -14,7 +14,7 @@ impl Sha256Hash {
         hasher.update(data);
         let result = hasher.finalize();
         let mut hash = [0; HASH_LEN];
-        hash.copy_from_slice(&result);
+        hash.copy_from_slice(result.as_ref());
         Self(hash)
     }
 }

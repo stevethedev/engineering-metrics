@@ -27,6 +27,7 @@ const OUTPUT_TS_DIR =
 const JTD_EXTENSION = process.env.JTD_EXTENSION || ".jtd.json";
 const JTD_EXECUTOR_PATH =
   process.env.JTD_EXECUTOR_PATH || path.join(__dirname, ".bin");
+const TEMP_DIR = process.env.TEMP_DIR || os.tmpdir();
 
 const getJtdExecutor = () => {
   const ver = spawnSync("jtd-codegen", ["--version"], { shell: false });
@@ -122,7 +123,7 @@ const setupJtd = async () => {
   }
 
   process.stdout.write("jtd-codegen not found. Installing...\n");
-  const downloadDir = await fs.mkdtemp(os.tmpdir());
+  const downloadDir = await fs.mkdtemp(TEMP_DIR);
   await downloadJtdCodegen(downloadDir);
   await unzipJtdCodegen(downloadDir, JTD_EXECUTOR_PATH);
   console.log(spawnSync(JTD_EXECUTOR, ["--version"], { shell: false }));

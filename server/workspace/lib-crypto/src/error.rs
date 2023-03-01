@@ -13,4 +13,7 @@ pub enum Error {
 
     #[error("invalid key length: {0}")]
     InvalidKeyLength(usize),
+
+    #[error("invalid password hash: {0}")]
+    InvalidPasswordHash(String),
 }

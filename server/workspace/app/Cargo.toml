@@ -7,6 +7,10 @@ edition = "2021"
 
 [dependencies.actix-web]
 version = "4.3"
+features = [
+    "default",
+    "rustls",
+]
 
 [dependencies.bytes]
 version = "1.4"
@@ -25,6 +29,9 @@ path = "../lib-base64"
 
 [dependencies.lib-crypto]
 path = "../lib-crypto"
+
+[dependencies.lib-database]
+path = "../lib-database"
 
 [dependencies.lib-environment]
 path = "../lib-environment"

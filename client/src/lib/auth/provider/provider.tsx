@@ -32,9 +32,9 @@ const fillData = (
  */
 export const Provider: FC<AuthProviderProps> = ({ children, data = null }) => {
   const filledData = fillData(data);
-  const [auth, setAuth] = useState<AuthContextData>(filledData);
+  const authContextData = useState<AuthContextData>(filledData);
 
   return (
-    <context.Provider value={[auth, setAuth]}>{children}</context.Provider>
+    <context.Provider value={authContextData}>{children}</context.Provider>
   );
 };

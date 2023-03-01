@@ -54,6 +54,23 @@ impl EnvironmentVariable<u64> for AuthTokenTtl {
     }
 }
 
+/// The connection string to use to connect to the database.
+pub struct DbConnectionString;
+impl EnvironmentVariable<String> for DbConnectionString {
+    const NAME: &'static str = "DB_CONNECTION_STRING";
+
+    fn default() -> String {
+        "sqlite://database.db".to_string()
+    }
+
+    fn get() -> String {
+        match Self::get_raw() {
+            Ok(value) => value,
+            Err(_) => Self::default(),
+        }
+    }
+}
+
 /// The file path to the encryption key. This can hold any value of any length.
 /// If the file does not exist, it will be created. If the file is empty, a new
 /// key will be generated.

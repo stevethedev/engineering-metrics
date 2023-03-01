@@ -1,9 +1,12 @@
+use async_trait::async_trait;
+
+pub use interface::{CreateUser, Error, Interface, Result, UpdateUser, User, UserId};
+use lib_database::Connection;
+pub use memory::Repo as Memory;
+
+mod database;
 mod interface;
 mod memory;
-
-use async_trait::async_trait;
-pub use interface::{CreateUser, Error, Interface, Result, UpdateUser, User, UserId};
-pub use memory::Repo as Memory;
 
 /// The master user repository.
 #[derive(Clone)]
@@ -16,6 +19,15 @@ impl Repo {
     #[must_use]
     pub fn memory() -> Self {
         let repo = memory::Repo::default();
+        Self {
+            repo: std::sync::Arc::new(Box::new(repo)),
+        }
+    }
+
+    /// Creates a new database user repository.
+    #[must_use]
+    pub fn database(connection: Connection) -> Self {
+        let repo = database::Repo::new(connection);
         Self {
             repo: std::sync::Arc::new(Box::new(repo)),
         }
