@@ -46,7 +46,7 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .default(true),
                     )
-                    .to_owned(),
+                    .clone(),
             )
             .await?;
 
@@ -58,7 +58,7 @@ impl MigrationTrait for Migration {
                     .name(IDX_USERNAME)
                     .table(UserCredentials::Table)
                     .col(UserCredentials::Username)
-                    .to_owned(),
+                    .clone(),
             )
             .await?;
 
@@ -76,7 +76,7 @@ impl MigrationTrait for Migration {
                 hash_password(b"admin").unwrap().into(),
                 true.into(),
             ])
-            .to_owned();
+            .clone();
 
         manager.exec_stmt(insert).await?;
 
@@ -86,7 +86,7 @@ impl MigrationTrait for Migration {
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         // DROP INDEX "idx-user_username";
         manager
-            .drop_index(Index::drop().name(IDX_USERNAME).to_owned())
+            .drop_index(Index::drop().name(IDX_USERNAME).clone())
             .await?;
 
         // DROP TABLE IF EXISTS "user";
@@ -95,7 +95,7 @@ impl MigrationTrait for Migration {
                 Table::drop()
                     .if_exists()
                     .table(UserCredentials::Table)
-                    .to_owned(),
+                    .clone(),
             )
             .await?;
 
@@ -103,7 +103,7 @@ impl MigrationTrait for Migration {
     }
 }
 
-/// Learn more at https://docs.rs/sea-query#iden
+/// Learn more at <https://docs.rs/sea-query#iden>
 #[derive(Iden)]
 enum UserCredentials {
     Table,

@@ -29,7 +29,7 @@ ARG BUILD_ARGS
 
 WORKDIR /build/server
 
-RUN apk add --no-cache musl-dev
+RUN apk add --no-cache musl-dev pkgconfig openssl-dev
 
 COPY ./server .
 COPY --from=json-builder /build/json-builder/build/rs ./workspace/lib-json-schema/src/generated

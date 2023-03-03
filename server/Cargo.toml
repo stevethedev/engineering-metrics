@@ -3,6 +3,7 @@ members = [
     "workspace/app",
     "workspace/lib-authentication",
     "workspace/lib-base64",
+    "workspace/lib-cache",
     "workspace/lib-crypto",
     "workspace/lib-database",
     "workspace/lib-database-migration",

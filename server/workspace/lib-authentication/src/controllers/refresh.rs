@@ -31,11 +31,14 @@ where
     let user_id = refresh_token_repo.get(refresh_token).await?;
 
     // Remove this refresh token from the repository.
-    let tokens = auth_token_repo
-        .get_by_tag("refresh-token", refresh_token.as_ref())
-        .await?;
-    for token in tokens {
-        auth_token_repo.delete(&token).await?;
+    let auth_token = refresh_token_repo
+        .get_tag(refresh_token, "auth-token")
+        .await
+        .ok()
+        .map(AuthToken::from);
+
+    if let Some(auth_token) = auth_token {
+        auth_token_repo.delete(&auth_token).await?;
     }
 
     // Remove this refresh token from the repository.

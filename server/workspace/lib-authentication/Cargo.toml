@@ -18,6 +18,12 @@ version = "0.1"
 [dependencies.bytes]
 version = "1.4"
 
+[dependencies.lib-base64]
+path = "../lib-base64"
+
+[dependencies.lib-cache]
+path = "../lib-cache"
+
 [dependencies.lib-crypto]
 path = "../lib-crypto"
 

@@ -32,12 +32,19 @@ pub trait Interface<Token: TokenInterface>: Send + Sync {
     ///
     /// - `token`: The token to put into the token repository.
     /// - `user_id`: The user ID to put into the token repository.
+    /// - `tags`: The tags to put into the token repository.
     /// - `ttl`: The time to live of the token.
     ///
     /// # Errors
     ///
     /// Returns an error if the token could not be generated.
-    async fn put(&self, token: &Token, user_id: &Uuid, ttl: Option<&Duration>) -> Result<()>;
+    async fn put(
+        &self,
+        token: &Token,
+        user_id: &Uuid,
+        tags: &[(&str, &[u8])],
+        ttl: Option<&Duration>,
+    ) -> Result<()>;
 
     /// Get the user ID from the token repository.
     ///
@@ -65,6 +72,22 @@ pub trait Interface<Token: TokenInterface>: Send + Sync {
     /// Returns an error if the token could not be deleted.
     async fn delete(&self, token: &Token) -> Result<()>;
 
+    /// Get the value of a tag.
+    ///
+    /// # Parameters
+    ///
+    /// - `token`: The token to get the tag from.
+    /// - `tag`: The tag to get the value of.
+    ///
+    /// # Returns
+    ///
+    /// The value of the tag.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the tag could not be found.
+    async fn get_tag(&self, token: &Token, tag: &str) -> Result<Vec<u8>>;
+
     /// Tag the token with a key-value pair.
     ///
     /// # Parameters
@@ -77,28 +100,4 @@ pub trait Interface<Token: TokenInterface>: Send + Sync {
     ///
     /// Returns an error if the token could not be tagged.
     async fn put_tag(&self, token: &Token, tag: &str, value: &[u8]) -> Result<()>;
-
-    /// Get all tokens with a specific tag/value pair.
-    ///
-    /// # Parameters
-    ///
-    /// - `tag`: The tag to search for.
-    /// - `value`: The value to search for.
-    ///
-    /// # Returns
-    ///
-    /// A list of tokens.
-    async fn get_by_tag(&self, tag: &str, value: &[u8]) -> Result<Vec<Token>>;
-
-    /// Delete all tokens with a specific tag/value pair.
-    ///
-    /// # Parameters
-    ///
-    /// - `tag`: The tag to search for.
-    /// - `value`: The value to search for.
-    ///
-    /// # Errors
-    ///
-    /// Returns an error if the tokens could not be deleted.
-    async fn delete_by_tag(&self, tag: &str, value: &[u8]) -> Result<()>;
 }

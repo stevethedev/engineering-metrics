@@ -25,6 +25,14 @@ services:
     networks:
       - default
 
+  cache:
+    container_name: cache
+    image: redis:7.0.9-alpine3.17
+    ports:
+      - "6379:6379"
+    networks:
+      - default
+
   database:
     container_name: database
     image: postgres:15-alpine3.17
@@ -48,6 +56,7 @@ services:
       args:
         NODE_ENV: development
     depends_on:
+      - cache
       - database
     environment:
       RUST_LOG: ${SERVER_RUST_LOG:-}

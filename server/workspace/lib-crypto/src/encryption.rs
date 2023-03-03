@@ -17,6 +17,7 @@ impl Key {
     /// # Arguments
     ///
     /// * `source` - source to hash
+    #[must_use]
     pub fn hash_from(source: &[u8]) -> Self {
         let hash = Sha256Hash::new(source);
         Self(hash.into())
@@ -29,14 +30,17 @@ impl Key {
     /// Returns [`Error::Unspecified`] if key generation fails.
     pub fn generate() -> Result<Self> {
         let mut key = [0u8; KEY_LEN];
-        let xkey = XChaCha20Poly1305::generate_key(&mut crypto_rng());
+        let x_chacha_key = XChaCha20Poly1305::generate_key(&mut crypto_rng());
+        let slice = x_chacha_key
+            .get(0..KEY_LEN)
+            .ok_or_else(|| Error::Unspecified("failed to generate encryption key".to_string()))?;
 
-        key.copy_from_slice(&xkey);
+        key.copy_from_slice(slice);
 
         Ok(Self(key))
     }
 
-    /// Encrypt plaintext using XChaCha20Poly1305. The nonce is generated
+    /// Encrypt plaintext using `XChaCha20Poly1305`. The nonce is generated
     /// automatically and prepended to the ciphertext.
     ///
     /// # Arguments
@@ -53,7 +57,7 @@ impl Key {
 
         let result = cipher
             .encrypt(&nonce, plaintext)
-            .map_err(|e| Error::Unspecified(format!("{:?}", e)))?;
+            .map_err(|e| Error::Unspecified(format!("{e:?}")))?;
 
         let result = {
             let mut tmp = nonce.to_vec();
@@ -64,7 +68,7 @@ impl Key {
         Ok(result)
     }
 
-    /// Decrypt ciphertext using XChaCha20Poly1305. The nonce is extracted
+    /// Decrypt ciphertext using `XChaCha20Poly1305`. The nonce is extracted
     /// from the ciphertext.
     ///
     /// # Arguments
