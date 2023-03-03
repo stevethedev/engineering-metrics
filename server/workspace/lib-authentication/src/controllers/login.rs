@@ -133,19 +133,21 @@ where
     let refresh_token = RefreshToken::generate(lib_environment::RefreshTokenSize::get())?;
 
     auth_token_repo
-        .put(&auth_token, user_id, auth_token_ttl)
-        .await?;
-
-    auth_token_repo
-        .put_tag(&auth_token, "refresh-token", refresh_token.as_ref())
-        .await?;
-
-    refresh_token_repo
-        .put(&refresh_token, user_id, refresh_token_ttl)
+        .put(
+            &auth_token,
+            user_id,
+            &[("refresh-token", refresh_token.as_ref())],
+            auth_token_ttl,
+        )
         .await?;
 
     refresh_token_repo
-        .put_tag(&refresh_token, "auth-token", auth_token.as_ref())
+        .put(
+            &refresh_token,
+            user_id,
+            &[("auth-token", auth_token.as_ref())],
+            refresh_token_ttl,
+        )
         .await?;
 
     Ok(TokenPair {

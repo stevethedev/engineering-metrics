@@ -9,6 +9,8 @@
 
 use actix_web::{middleware as aw_middleware, web, App, HttpServer};
 
+use lib_environment::{EnvironmentVariable, RedisCacheConnectionString};
+
 mod controllers;
 mod database;
 mod middleware;
@@ -27,10 +29,23 @@ async fn main() -> std::io::Result<()> {
         ));
     };
 
-    let user_repo = lib_authentication::UserRepo::database(db_connection.clone());
+    let redis_url = RedisCacheConnectionString::get();
+    let Ok(cache_controller) = lib_cache::Controller::open(&redis_url) else {
+        log::error!("Failed to open cache connection");
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Failed to open cache connection",
+        ));
+    };
 
-    let auth_token_repo = lib_authentication::TokenRepo::memory();
-    let refresh_token_repo = lib_authentication::TokenRepo::memory();
+    let user_repo = lib_authentication::UserRepo::database(db_connection.clone());
+    let auth_token_repo =
+        lib_authentication::TokenRepo::cache(cache_controller.clone(), "a".to_string());
+    let refresh_token_repo =
+        lib_authentication::TokenRepo::cache(cache_controller.clone(), "r".to_string());
+
+    // let auth_token_repo = lib_authentication::TokenRepo::memory();
+    // let refresh_token_repo = lib_authentication::TokenRepo::memory();
     // let user_repo = lib_authentication::UserRepo::memory();
     let auth_provider =
         lib_authentication::Provider::new(auth_token_repo, refresh_token_repo, user_repo);

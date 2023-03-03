@@ -43,7 +43,7 @@ mod tests {
             .await
             .unwrap();
         let token = AuthToken::generate(32).unwrap();
-        token_repo.put(&token, &user_id, None).await.unwrap();
+        token_repo.put(&token, &user_id, &[], None).await.unwrap();
         let user = whoami(&token_repo, &user_repo, &token).await.unwrap();
         assert!(user.is_some());
     }

@@ -1,3 +1,12 @@
+#![deny(
+    clippy::complexity,
+    clippy::correctness,
+    clippy::perf,
+    clippy::style,
+    clippy::suspicious,
+    clippy::pedantic
+)]
+
 pub use self::{
     connection::{Connection, LevelFilter, Options},
     controllers::user_credentials::{

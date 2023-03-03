@@ -1,5 +1,15 @@
+#![deny(
+    clippy::complexity,
+    clippy::correctness,
+    clippy::perf,
+    clippy::style,
+    clippy::suspicious,
+    clippy::pedantic
+)]
+
 pub use sea_orm_migration::prelude::*;
 
+#[allow(clippy::wildcard_imports)]
 use migrations::*;
 
 mod migrations;

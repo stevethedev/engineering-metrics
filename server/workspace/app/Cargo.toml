@@ -39,6 +39,9 @@ path = "../lib-environment"
 [dependencies.lib-json-schema]
 path = "../lib-json-schema"
 
+[dependencies.lib-cache]
+path = "../lib-cache"
+
 [dependencies.log]
 version = "0.4"
 

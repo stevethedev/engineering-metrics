@@ -69,6 +69,7 @@ pub struct Options {
 
 impl Options {
     /// Create a new configuration options struct for a database by passing in a URI string.
+    #[must_use]
     pub fn new(url: String) -> Self {
         Self {
             options: ConnectOptions::new(url),
@@ -123,7 +124,7 @@ impl Options {
         self
     }
 
-    /// Set the SQLCipher key.
+    /// Set the `SQLCipher` key.
     pub fn with_sqlcipher_key<T>(&mut self, value: T) -> &mut Self
     where
         T: Into<Cow<'static, str>>,
@@ -132,7 +133,7 @@ impl Options {
         self
     }
 
-    /// Set the PostgreSQL schema search path.
+    /// Set the `PostgreSQL` schema search path.
     pub fn with_schema_search_path(&mut self, schema_search_path: String) -> &mut Self {
         self.options.set_schema_search_path(schema_search_path);
         self

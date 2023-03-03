@@ -5,13 +5,16 @@ pub async fn logout(
     refresh_token_repo: &impl TokenRepoInterface<RefreshToken>,
     token: &AuthToken,
 ) -> Result<()> {
+    let refresh_token = auth_token_repo
+        .get_tag(token, "refresh-token")
+        .await
+        .ok()
+        .map(RefreshToken::from);
+
     auth_token_repo.delete(token).await?;
 
-    let tokens = refresh_token_repo
-        .get_by_tag("refresh-token", token.as_ref())
-        .await?;
-    for token in tokens {
-        refresh_token_repo.delete(&token).await?;
+    if let Some(refresh_token) = refresh_token {
+        refresh_token_repo.delete(&refresh_token).await?;
     }
 
     Ok(())
@@ -31,7 +34,7 @@ mod tests {
         let user_id = uuid::Uuid::new_v4();
 
         auth_token_repo
-            .put(&auth_token, &user_id, None)
+            .put(&auth_token, &user_id, &[], None)
             .await
             .unwrap();
         assert!(auth_token_repo.get(&auth_token).await.is_ok());
