@@ -22,9 +22,13 @@ export const DefaultLayout = mash<Props>(({ children, ...props }) => {
   );
 
   return (
-    <Grid rows="auto 1fr auto" {...props}>
+    <Grid flex={1} cols="auto" rows="auto 1fr auto" {...props}>
       {header}
-      <Grid cols="auto 1fr auto">
+      <Grid
+        flex={1}
+        rows={{ default: "auto 1fr auto", desktop: "auto" }}
+        cols={{ desktop: "auto 1fr auto" }}
+      >
         {nav}
         {main}
         {aside}
