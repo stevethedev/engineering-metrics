@@ -1,0 +1,12 @@
+@import "../../../scss/global";
+
+.vstack {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  @include bp-vars(gap, --gap, 0);
+  @include bp-vars(justify-self, --justify-self, auto);
+  @include bp-vars(align-items, --align-items, flex-start);
+  @include bp-vars(justify-content, --justify-content, flex-start);
+}

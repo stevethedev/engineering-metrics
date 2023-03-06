@@ -1,0 +1,45 @@
+@import "https://fonts.googleapis.com/css2?family=Archivo&family=Roboto:wght@300;400;700&family=Roboto+Mono&display=swap";
+
+$typ--font-family--default: "Roboto", sans-serif;
+$typ--font-family--monospace: "Roboto Mono", monospace;
+$typ--font-family--heading: "Archivo", sans-serif;
+
+$typ--font-size--base: 1rem;
+$typ--font-size--small: 0.875rem;
+$typ--font-size--large: 1.125rem;
+$typ--font-size--h1: 2.5rem;
+$typ--font-size--h2: 2rem;
+$typ--font-size--h3: 1.75rem;
+$typ--font-size--h4: 1.5rem;
+$typ--font-size--h5: 1.25rem;
+$typ--font-size--h6: 1rem;
+
+$typ--font-weight--light: 300;
+$typ--font-weight--normal: 400;
+$typ--font-weight--bold: 700;
+
+$typ--line-height--base: 1.5;
+$typ--line-height--heading: 1.25;
+
+$typ--letter-spacing--base: 0.01em;
+$typ--letter-spacing--heading: 0.05em;
+
+:root {
+  --typ--font-family--default: $typ--font-family--default;
+  --typ--font-family--monospace: $typ--font-family--monospace;
+  --typ--font-family--heading: $typ--font-family--heading;
+
+  --typ--font-size--base: $typ--font-size--base;
+  --typ--font-size--small: $typ--font-size--small;
+  --typ--font-size--large: $typ--font-size--large;
+
+  --typ--font-weight--light: $typ--font-weight--light;
+  --typ--font-weight--normal: $typ--font-weight--normal;
+  --typ--font-weight--bold: $typ--font-weight--bold;
+
+  --typ--line-height--base: $typ--line-height--base;
+  --typ--line-height--heading: $typ--line-height--heading;
+
+  --typ--letter-spacing--base: $typ--letter-spacing--base;
+  --typ--letter-spacing--heading: $typ--letter-spacing--heading;
+}

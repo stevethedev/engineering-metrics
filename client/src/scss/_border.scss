@@ -1,0 +1,25 @@
+$border--width--sm: 1px;
+$border--width--md: 2px;
+$border--width--lg: 4px;
+
+$border--radius--sm: 0.25rem;
+$border--radius--md: 0.5rem;
+$border--radius--lg: 1rem;
+
+$border--style--solid: solid;
+$border--style--dashed: dashed;
+$border--style--dotted: dotted;
+
+:root {
+  --border--width--sm: #{$border--width--sm};
+  --border--width--md: #{$border--width--md};
+  --border--width--lg: #{$border--width--lg};
+
+  --border--radius--sm: #{$border--radius--sm};
+  --border--radius--md: #{$border--radius--md};
+  --border--radius--lg: #{$border--radius--lg};
+
+  --border--style--solid: #{$border--style--solid};
+  --border--style--dashed: #{$border--style--dashed};
+  --border--style--dotted: #{$border--style--dotted};
+}

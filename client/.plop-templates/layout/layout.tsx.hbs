@@ -1,0 +1,11 @@
+import { ReactNode } from "react";
+import { mash } from "../../../utils/class-mash";
+import { Box, type BoxProps } from "../../blocks/box";
+
+export interface {{pascalCase name}}Props extends BoxProps {
+  children: ReactNode[] | ReactNode;
+}
+
+export const {{pascalCase name}} = mash<{{pascalCase name}}Props>(({ children }) => {
+  return <div>{children}</div>;
+});

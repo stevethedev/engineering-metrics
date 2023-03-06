@@ -10,15 +10,24 @@
     "allowJs": true,
     "jsx": "react-jsx",
     "skipLibCheck": true,
-    "lib": [
-      "esnext", "webworker"
-    ]
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ],
+    "lib": ["esnext", "webworker"]
   },
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "webpack.config.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "webpack.config.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

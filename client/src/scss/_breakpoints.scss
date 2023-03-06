@@ -1,0 +1,43 @@
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+
+:root {
+  --bp-tablet: #{$bp-tablet};
+  --bp-desktop: #{$bp-desktop};
+}
+
+@mixin tablet {
+  @media (min-width: $bp-tablet) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $bp-desktop) {
+    @content;
+  }
+}
+
+@mixin bp-vars($rule, $var, $default) {
+  @if $default {
+    #{$rule}: var(#{$var}, #{$default});
+  } @else {
+    #{$rule}: var(#{$var});
+  }
+
+  @include tablet {
+    @if $default {
+      #{$rule}: var(#{$var}--tablet, var(#{$var}, #{$default}));
+    } @else {
+      #{$rule}: var(#{$var}--tablet, var(#{$var}));
+    }
+  }
+
+  @include desktop {
+    @if $default {
+      #{$rule}: var(#{$var}--desktop, var(#{$var}--tablet, var(#{$var}, #{$default})));
+    } @else {
+      #{$rule}: var(#{$var}--desktop, var(#{$var}--tablet, var(#{$var})));
+    }
+  }
+}

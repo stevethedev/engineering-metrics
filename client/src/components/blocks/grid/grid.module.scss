@@ -1,0 +1,9 @@
+@import "src/scss/global";
+
+.grid {
+    display: grid;
+
+    @include bp-vars(grid-template-columns, --grid-template-columns, auto);
+    @include bp-vars(grid-template-rows, --grid-template-rows, auto);
+    @include bp-vars(grid-gap, --grid-gap, 0);
+}

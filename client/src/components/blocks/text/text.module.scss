@@ -1,0 +1,62 @@
+@import "../../../scss/global";
+
+.text {
+  @include bp-vars(font-size, --font-size, $typ--font-size--base);
+  @include bp-vars(line-height, --line-height, $typ--line-height--base);
+  @include bp-vars(letter-spacing, --letter-spacing, $typ--letter-spacing--base);
+  @include bp-vars(font-weight, --font-weight, $typ--font-weight--normal);
+  @include bp-vars(font-family, --font-family, $typ--font-family--default);
+}
+
+.text--base {
+  --font-size: #{$typ--font-size--base};
+  --line-height: #{$typ--line-height--base};
+  --letter-spacing: #{$typ--letter-spacing--base};
+  --font-family: #{$typ--font-family--default};
+}
+
+.text--h1 {
+  --font-size: #{$typ--font-size--h1};
+  --line-height: #{$typ--line-height--heading};
+  --letter-spacing: #{$typ--letter-spacing--heading};
+  --font-family: #{$typ--font-family--heading};
+}
+
+.text--h2 {
+  --font-size: #{$typ--font-size--h2};
+  --line-height: #{$typ--line-height--heading};
+  --letter-spacing: #{$typ--letter-spacing--heading};
+  --font-family: #{$typ--font-family--heading};
+}
+
+.text--h3 {
+  --font-size: #{$typ--font-size--h3};
+  --line-height: #{$typ--line-height--heading};
+  --letter-spacing: #{$typ--letter-spacing--heading};
+  --font-family: #{$typ--font-family--heading};
+}
+
+.text--h4 {
+  --font-size: #{$typ--font-size--h4};
+  --line-height: #{$typ--line-height--heading};
+  --letter-spacing: #{$typ--letter-spacing--heading};
+  --font-family: #{$typ--font-family--heading};
+}
+
+.text--h5 {
+  --font-size: #{$typ--font-size--h5};
+  --line-height: #{$typ--line-height--heading};
+  --letter-spacing: #{$typ--letter-spacing--heading};
+  --font-family: #{$typ--font-family--heading};
+}
+
+.text--h6 {
+  --font-size: #{$typ--font-size--h6};
+  --line-height: #{$typ--line-height--heading};
+  --letter-spacing: #{$typ--letter-spacing--heading};
+  --font-family: #{$typ--font-family--heading};
+}
+
+.text--mono {
+  --font-family: #{$typ--font-family--monospace};
+}

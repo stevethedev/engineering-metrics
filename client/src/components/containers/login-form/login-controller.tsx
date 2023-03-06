@@ -1,4 +1,4 @@
-import { useLoginApi, useToken } from "../../lib/auth";
+import { useLoginApi, useToken } from "../../../lib/auth";
 import { LoginForm } from "./login-form";
 
 export const LoginController = () => {
