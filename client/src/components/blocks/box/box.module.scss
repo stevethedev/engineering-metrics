@@ -3,7 +3,7 @@
 .box {
   box-sizing: border-box;
   @include bp-vars(display, --display, block);
-  @include bp-vars(flex, --flex, auto);
+  @include bp-vars(flex, --flex, 0 1 auto);
 
   margin: 0;
   padding: 0;
